@@ -6,13 +6,13 @@
 #    By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 14:30:50 by irychkov          #+#    #+#              #
-#    Updated: 2024/11/11 21:00:01 by irychkov         ###   ########.fr        #
+#    Updated: 2024/11/11 23:09:54 by irychkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = main.c parse_input.c
+SRCS = main.c parse_input.c init_data.c init_single_philo.c errors.c time.c
 
 OBJS = $(SRCS:.c=.o)
 
