@@ -6,7 +6,7 @@
 #    By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 14:30:50 by irychkov          #+#    #+#              #
-#    Updated: 2024/11/11 17:42:40 by irychkov         ###   ########.fr        #
+#    Updated: 2024/11/11 20:26:34 by irychkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,18 +16,18 @@ SRCS = main.c parse_input.c
 
 OBJS = $(SRCS:.c=.o)
 
+.SECONDARY: $(OBJS)
+
 HEADERS = -I.
 
 CFLAGS = -Wall -Wextra -Werror #-lpthread
+
 CC = cc
 
-all: mandatory
+all: $(NAME)
 
-mandatory: .mandatory
-
-.mandatory: $(OBJS)
+$(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-	@touch .mandatory
 	@echo "Compiled philo: $(NAME)"
 
 %.o: %.c
@@ -35,7 +35,6 @@ mandatory: .mandatory
 
 clean:
 	@rm -rf $(OBJS)
-	@rm -f .mandatory
 	@echo "Cleaned object files"
 
 fclean: clean
