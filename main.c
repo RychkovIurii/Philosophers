@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 18:31:33 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 19:33:53 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,48 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 	pthread_mutex_unlock(&data->mutex_print);
 }
 
+
+void	custom_wait(t_program_data *data, size_t time_to_wait)
+{
+	size_t	start_time;
+	size_t	current_time;
+
+	start_time = get_current_time();
+	while (1)
+	{
+		current_time = get_current_time();
+		if (current_time - start_time >= time_to_wait)
+			break;
+		pthread_mutex_lock(&data->mutex_stop);
+		if (data->stop_flag)
+		{
+			pthread_mutex_unlock(&data->mutex_stop);
+			break ;
+		}
+		pthread_mutex_unlock(&data->mutex_stop);
+		usleep(10);
+	}
+}
+
+void	philo_does(t_single_philo *single_philo)
+{
+	while (1)
+	{
+		pthread_mutex_lock(single_philo->left_fork);
+		print_msg(single_philo->data, single_philo->id, 1);
+		pthread_mutex_lock(single_philo->right_fork);
+		print_msg(single_philo->data, single_philo->id, 1);
+		print_msg(single_philo->data, single_philo->id, 2);
+		custom_wait(single_philo->data, single_philo->data->time_to_eat);
+		pthread_mutex_unlock(single_philo->right_fork);
+		pthread_mutex_unlock(single_philo->left_fork);
+		print_msg(single_philo->data, single_philo->id, 3);
+		custom_wait(single_philo->data, single_philo->data->time_to_sleep);
+		print_msg(single_philo->data, single_philo->id, 4);
+		print_msg(single_philo->data, single_philo->id, 5);
+	}
+}
+
 //pthread_barrier_t barrier;
 
 void	*routine(void *philo)
@@ -87,9 +129,10 @@ void	*routine(void *philo)
 	pthread_mutex_lock(&single_philo->data->mutex_main);
 	pthread_mutex_unlock(&single_philo->data->mutex_main);
 /* 	pthread_barrier_wait(&barrier); */
-	print_msg(single_philo->data, single_philo->id, 1);
+	/* print_msg(single_philo->data, single_philo->id, 1);
 	sleep(1);
-	print_msg(single_philo->data, single_philo->id, 5);
+	print_msg(single_philo->data, single_philo->id, 5); */
+	philo_does(philo);
 	return (NULL);
 }
 
