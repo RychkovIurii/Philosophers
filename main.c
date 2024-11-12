@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 15:28:50 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 18:31:33 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,14 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 	size_t	timestamp_in_ms;
 
 	pthread_mutex_lock(&data->mutex_print);
+	pthread_mutex_lock(&data->mutex_stop);
+	if (data->stop_flag == 1)
+	{
+		pthread_mutex_unlock(&data->mutex_stop);
+		pthread_mutex_unlock(&data->mutex_print);
+		return;
+	}
+	pthread_mutex_unlock(&data->mutex_stop);
 	timestamp_in_ms = get_current_time() - data->start_time;
 	if (message_code == 1)
 		printf("%zu %d has taken a fork\n", timestamp_in_ms, id);
@@ -57,7 +65,15 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 	else if (message_code == 4)
 		printf("%zu %d is thinking\n", timestamp_in_ms, id);
 	else if (message_code == 5)
+	{
 		printf("%zu %d died\n", timestamp_in_ms, id);
+		pthread_mutex_lock(&data->mutex_stop);
+		data->stop_flag = 1;
+		pthread_mutex_unlock(&data->mutex_stop);
+		pthread_mutex_unlock(&data->mutex_print);
+		return ;
+	}
+
 	pthread_mutex_unlock(&data->mutex_print);
 }
 
@@ -73,8 +89,23 @@ void	*routine(void *philo)
 /* 	pthread_barrier_wait(&barrier); */
 	print_msg(single_philo->data, single_philo->id, 1);
 	sleep(1);
-	print_msg(single_philo->data, single_philo->id, 2);
+	print_msg(single_philo->data, single_philo->id, 5);
 	return (NULL);
+}
+
+void	check_stop(t_program_data *data)
+{
+	while (1)
+	{
+		pthread_mutex_lock(&data->mutex_stop);
+		if (data->stop_flag)
+		{
+			pthread_mutex_unlock(&data->mutex_stop);
+			break ;
+		}
+		pthread_mutex_unlock(&data->mutex_stop);
+		usleep(1);
+	}
 }
 
 void	run_threads(t_program_data *data)
@@ -104,6 +135,7 @@ void	run_threads(t_program_data *data)
 	data->start_time = get_current_time();
 	pthread_mutex_unlock(&data->mutex_main);
 /* 	pthread_barrier_wait(&barrier); */
+	check_stop(data);
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{

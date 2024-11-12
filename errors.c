@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:47:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 15:00:51 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 16:48:44 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ void	destroy_mutexes(t_program_data *data)
 		i++;
 	}
 	pthread_mutex_destroy(&data->mutex_print);
+	pthread_mutex_destroy(&data->mutex_stop);
 	pthread_mutex_destroy(&data->mutex_main);
 }

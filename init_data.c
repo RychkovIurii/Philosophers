@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 14:30:39 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 16:48:47 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ t_program_data	*init_data(int ac, char *av[])
 		return NULL;
 	}
 	pthread_mutex_init(&data->mutex_print, NULL);
+	pthread_mutex_init(&data->mutex_stop, NULL);
 	pthread_mutex_init(&data->mutex_main, NULL);
 	while (i < data->number_of_philosophers)
 	{

@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 14:29:44 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 16:48:50 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ typedef struct s_program_data
 	const int		time_to_sleep;
 	const int		number_of_times_each_philosopher_must_eat;
 	size_t			start_time;
+	int				stop_flag;
 	pthread_mutex_t	mutex_main;
 	pthread_mutex_t	mutex_print;
+	pthread_mutex_t	mutex_stop;
 	pthread_mutex_t	*forks;
 }	t_program_data;
 
@@ -48,7 +50,7 @@ int					converter(char *str);
 t_program_data		*init_data(int ac, char *av[]);
 t_single_philo		*init_single_philos(t_program_data *data);
 void				destroy_mutexes(t_program_data *data);
-void				free_all(t_program_data *data, t_single_philo *philos);
+void				free_all(t_program_data *data, t_single_philo *philo);
 size_t				get_current_time(void);
 
 #endif
