@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 13:54:22 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:29:44 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_program_data
 	const int		time_to_sleep;
 	const int		number_of_times_each_philosopher_must_eat;
 	size_t			start_time;
+	pthread_mutex_t	mutex_main;
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	*forks;
 }	t_program_data;

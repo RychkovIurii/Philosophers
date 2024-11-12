@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 14:25:28 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:28:50 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 {
 	size_t	timestamp_in_ms;
 
-	timestamp_in_ms = get_current_time() - data->start_time;
 	pthread_mutex_lock(&data->mutex_print);
+	timestamp_in_ms = get_current_time() - data->start_time;
 	if (message_code == 1)
 		printf("%zu %d has taken a fork\n", timestamp_in_ms, id);
 	else if (message_code == 2)
@@ -61,11 +61,16 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 	pthread_mutex_unlock(&data->mutex_print);
 }
 
+//pthread_barrier_t barrier;
+
 void	*routine(void *philo)
 {
 	t_single_philo *single_philo;
 
 	single_philo = (t_single_philo *)philo;
+	pthread_mutex_lock(&single_philo->data->mutex_main);
+	pthread_mutex_unlock(&single_philo->data->mutex_main);
+/* 	pthread_barrier_wait(&barrier); */
 	print_msg(single_philo->data, single_philo->id, 1);
 	sleep(1);
 	print_msg(single_philo->data, single_philo->id, 2);
@@ -86,7 +91,8 @@ void	run_threads(t_program_data *data)
 		destroy_mutexes(data);
 		return ; // handle error and free
 	}
-	data->start_time = get_current_time();
+/* 	pthread_barrier_init(&barrier, NULL, 201); */
+	pthread_mutex_lock(&data->mutex_main);
 	while (i < data->number_of_philosophers)
 	{
 		if (pthread_create(&th[i], NULL, &routine, (void *)&philo[i]) != 0)
@@ -95,6 +101,9 @@ void	run_threads(t_program_data *data)
 		}
 		i++;
 	}
+	data->start_time = get_current_time();
+	pthread_mutex_unlock(&data->mutex_main);
+/* 	pthread_barrier_wait(&barrier); */
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
