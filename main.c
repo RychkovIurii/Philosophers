@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/11 23:05:45 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:25:28 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,31 +34,62 @@
 	}
 	return (data);
 } */
+/* 
+1. timestamp_in_ms X has taken a fork
+2. timestamp_in_ms X is eating
+3. timestamp_in_ms X is sleeping
+4. timestamp_in_ms X is thinking
+5. timestamp_in_ms X died
+ */
 
-void	*routine(void *arg)
+void	print_msg(t_program_data *data, int id, int	message_code)
 {
-	(void)arg;
-	printf("Hello from thread\n");
+	size_t	timestamp_in_ms;
+
+	timestamp_in_ms = get_current_time() - data->start_time;
+	pthread_mutex_lock(&data->mutex_print);
+	if (message_code == 1)
+		printf("%zu %d has taken a fork\n", timestamp_in_ms, id);
+	else if (message_code == 2)
+		printf("%zu %d is eating\n", timestamp_in_ms, id);
+	else if (message_code == 3)
+		printf("%zu %d is sleeping\n", timestamp_in_ms, id);
+	else if (message_code == 4)
+		printf("%zu %d is thinking\n", timestamp_in_ms, id);
+	else if (message_code == 5)
+		printf("%zu %d died\n", timestamp_in_ms, id);
+	pthread_mutex_unlock(&data->mutex_print);
+}
+
+void	*routine(void *philo)
+{
+	t_single_philo *single_philo;
+
+	single_philo = (t_single_philo *)philo;
+	print_msg(single_philo->data, single_philo->id, 1);
+	sleep(1);
+	print_msg(single_philo->data, single_philo->id, 2);
 	return (NULL);
 }
 
 void	run_threads(t_program_data *data)
 {
 	int				i;
-	t_single_philo	*philos;
+	t_single_philo	*philo;
 	pthread_t		th[data->number_of_philosophers];
 
 	i = 0;
-	philos = init_single_philos(data);
-	if (!philos)
+	philo = init_single_philos(data);
+	if (!philo)
 	{
-		free_all(data, philos);
+		free_all(data, philo);
 		destroy_mutexes(data);
 		return ; // handle error and free
 	}
+	data->start_time = get_current_time();
 	while (i < data->number_of_philosophers)
 	{
-		if (pthread_create(&th[i], NULL, &routine, (void *)&philos[i]) != 0)
+		if (pthread_create(&th[i], NULL, &routine, (void *)&philo[i]) != 0)
 		{
 			perror("pthread_create failed");
 		}
@@ -74,7 +105,7 @@ void	run_threads(t_program_data *data)
 		i++;
 	}
 	destroy_mutexes(data);
-	free_all(data, philos);
+	free_all(data, philo);
 }
 
 int	main(int ac, char *av[])

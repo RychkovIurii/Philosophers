@@ -6,15 +6,15 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:47:56 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/11 22:48:18 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 13:53:51 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-unsigned long int	get_current_time(void)
+size_t	get_current_time(void)
 {
-	unsigned long int	current_time;
+	size_t				current_time;
 	struct timeval		time;
 
 	gettimeofday(&time, NULL);

@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:47:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/11 22:56:10 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 13:53:47 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ time_to_sleep [number_of_times_each_philosopher_must_eat]\n", 119);
 	return (0);
 }
 
-void	free_all(t_program_data *data, t_single_philo *philos)
+void	free_all(t_program_data *data, t_single_philo *philo)
 {
 	free(data->forks);
 	free(data);
-	free(philos);
+	free(philo);
 }
 
 void	destroy_mutexes(t_program_data *data)

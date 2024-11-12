@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:28 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/11 23:04:50 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/12 13:53:45 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,22 @@
 t_single_philo *init_single_philos(t_program_data *data)
 {
 	int				i;
-	t_single_philo	*philos;
+	t_single_philo	*philo;
 
 	i = 0;
-	philos = malloc(sizeof(t_single_philo) * data->number_of_philosophers);
-	if (!philos)
+	philo = malloc(sizeof(t_single_philo) * data->number_of_philosophers);
+	if (!philo)
 		return (NULL);
-	memset(philos, 0, sizeof(t_single_philo) * data->number_of_philosophers);
+	memset(philo, 0, sizeof(t_single_philo) * data->number_of_philosophers);
 	while (i < data->number_of_philosophers)
 	{
-		philos[i].id = i + 1;
-		philos[i].times_eaten = 0;
-		philos[i].last_meal_time = data->start_time;
-		philos[i].left_fork = &data->forks[i];
-		philos[i].right_fork = &data->forks[(i + 1) % data->number_of_philosophers];
-		philos[i].data = data;
+		philo[i].id = i + 1;
+		philo[i].times_eaten = 0;
+		philo[i].last_meal_time = data->start_time;
+		philo[i].left_fork = &data->forks[i];
+		philo[i].right_fork = &data->forks[(i + 1) % data->number_of_philosophers];
+		philo[i].data = data;
 		i++;
 	}
-	return (philos);
+	return (philo);
 }
