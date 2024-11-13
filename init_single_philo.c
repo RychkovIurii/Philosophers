@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:28 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 16:48:46 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:09:28 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_single_philo *init_single_philos(t_program_data *data)
 	{
 		philo[i].id = i + 1;
 		philo[i].times_eaten = 0;
+		philo[i].must_eat = (int)data->number_of_times_each_philosopher_must_eat;
 		philo[i].last_meal_time = data->start_time;
 		philo[i].left_fork = &data->forks[i];
 		philo[i].right_fork = &data->forks[(i + 1) % data->number_of_philosophers];

@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 16:48:50 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:09:34 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_program_data
 typedef struct s_single_philo {
 	int					id;
 	int					times_eaten;
+	int					must_eat;
 	size_t				last_meal_time;
 	pthread_t			thread_id;
 	pthread_mutex_t		*left_fork;

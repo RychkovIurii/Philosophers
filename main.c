@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 19:33:53 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:58:10 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 		data->stop_flag = 1;
 		pthread_mutex_unlock(&data->mutex_stop);
 		pthread_mutex_unlock(&data->mutex_print);
+		//usleep(10);
 		return ;
 	}
 
@@ -102,7 +103,14 @@ void	custom_wait(t_program_data *data, size_t time_to_wait)
 
 void	philo_does(t_single_philo *single_philo)
 {
-	while (1)
+	int	times;
+
+	if (single_philo->must_eat == -1)
+		times = 1;
+	else
+		times = single_philo->must_eat;
+
+	while (times)
 	{
 		pthread_mutex_lock(single_philo->left_fork);
 		print_msg(single_philo->data, single_philo->id, 1);
@@ -115,8 +123,11 @@ void	philo_does(t_single_philo *single_philo)
 		print_msg(single_philo->data, single_philo->id, 3);
 		custom_wait(single_philo->data, single_philo->data->time_to_sleep);
 		print_msg(single_philo->data, single_philo->id, 4);
-		print_msg(single_philo->data, single_philo->id, 5);
+		/* print_msg(single_philo->data, single_philo->id, 5); */
+		if (single_philo->must_eat != -1)
+			times--;
 	}
+	print_msg(single_philo->data, single_philo->id, 5);
 }
 
 //pthread_barrier_t barrier;
@@ -132,6 +143,11 @@ void	*routine(void *philo)
 	/* print_msg(single_philo->data, single_philo->id, 1);
 	sleep(1);
 	print_msg(single_philo->data, single_philo->id, 5); */
+	if(single_philo->id % 2 != 0)
+	{
+		print_msg(single_philo->data, single_philo->id, 4);
+		custom_wait(single_philo->data, single_philo->data->time_to_eat / 2);
+	}
 	philo_does(philo);
 	return (NULL);
 }
@@ -147,7 +163,7 @@ void	check_stop(t_program_data *data)
 			break ;
 		}
 		pthread_mutex_unlock(&data->mutex_stop);
-		usleep(1);
+		usleep(10);
 	}
 }
 
