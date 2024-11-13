@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/13 12:58:10 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/13 19:04:10 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,11 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 	size_t	timestamp_in_ms;
 
 	pthread_mutex_lock(&data->mutex_print);
-	pthread_mutex_lock(&data->mutex_stop);
-	if (data->stop_flag == 1)
+	if (is_stop_in_threads(data))
 	{
-		pthread_mutex_unlock(&data->mutex_stop);
 		pthread_mutex_unlock(&data->mutex_print);
 		return;
 	}
-	pthread_mutex_unlock(&data->mutex_stop);
 	timestamp_in_ms = get_current_time() - data->start_time;
 	if (message_code == 1)
 		printf("%zu %d has taken a fork\n", timestamp_in_ms, id);
@@ -71,34 +68,10 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 		data->stop_flag = 1;
 		pthread_mutex_unlock(&data->mutex_stop);
 		pthread_mutex_unlock(&data->mutex_print);
-		//usleep(10);
+		usleep(100);
 		return ;
 	}
-
 	pthread_mutex_unlock(&data->mutex_print);
-}
-
-
-void	custom_wait(t_program_data *data, size_t time_to_wait)
-{
-	size_t	start_time;
-	size_t	current_time;
-
-	start_time = get_current_time();
-	while (1)
-	{
-		current_time = get_current_time();
-		if (current_time - start_time >= time_to_wait)
-			break;
-		pthread_mutex_lock(&data->mutex_stop);
-		if (data->stop_flag)
-		{
-			pthread_mutex_unlock(&data->mutex_stop);
-			break ;
-		}
-		pthread_mutex_unlock(&data->mutex_stop);
-		usleep(10);
-	}
 }
 
 void	philo_does(t_single_philo *single_philo)
@@ -109,28 +82,44 @@ void	philo_does(t_single_philo *single_philo)
 		times = 1;
 	else
 		times = single_philo->must_eat;
-
 	while (times)
 	{
-		pthread_mutex_lock(single_philo->left_fork);
+		if (is_stop_in_threads(single_philo->data))
+			break ;
+		if (single_philo->id % 2 == 0) {
+			pthread_mutex_lock(single_philo->left_fork);
+			print_msg(single_philo->data, single_philo->id, 1);
+			pthread_mutex_lock(single_philo->right_fork);
+			print_msg(single_philo->data, single_philo->id, 1);
+		} else {
+			pthread_mutex_lock(single_philo->right_fork);
+			print_msg(single_philo->data, single_philo->id, 1);
+			pthread_mutex_lock(single_philo->left_fork);
+			print_msg(single_philo->data, single_philo->id, 1);
+		}
+		/* pthread_mutex_lock(single_philo->right_fork);
 		print_msg(single_philo->data, single_philo->id, 1);
-		pthread_mutex_lock(single_philo->right_fork);
+		pthread_mutex_lock(single_philo->left_fork); */
 		print_msg(single_philo->data, single_philo->id, 1);
 		print_msg(single_philo->data, single_philo->id, 2);
-		custom_wait(single_philo->data, single_philo->data->time_to_eat);
+		single_philo->last_meal_time = get_current_time();
+		single_philo->times_eaten++;
+		custom_wait(single_philo, single_philo->data->time_to_eat, 1);
 		pthread_mutex_unlock(single_philo->right_fork);
 		pthread_mutex_unlock(single_philo->left_fork);
+		if (single_philo->must_eat == single_philo->times_eaten)
+			break;
 		print_msg(single_philo->data, single_philo->id, 3);
-		custom_wait(single_philo->data, single_philo->data->time_to_sleep);
+		custom_wait(single_philo, single_philo->data->time_to_sleep, 0);
 		print_msg(single_philo->data, single_philo->id, 4);
-		/* print_msg(single_philo->data, single_philo->id, 5); */
 		if (single_philo->must_eat != -1)
 			times--;
 	}
-	print_msg(single_philo->data, single_philo->id, 5);
+	pthread_mutex_lock(&single_philo->data->mutex_main);
+	single_philo->data->have_eaten++;
+	pthread_mutex_unlock(&single_philo->data->mutex_main);
+	/* print_msg(single_philo->data, single_philo->id, 5); */
 }
-
-//pthread_barrier_t barrier;
 
 void	*routine(void *philo)
 {
@@ -138,33 +127,19 @@ void	*routine(void *philo)
 
 	single_philo = (t_single_philo *)philo;
 	pthread_mutex_lock(&single_philo->data->mutex_main);
+	single_philo->last_meal_time = single_philo->data->start_time;
 	pthread_mutex_unlock(&single_philo->data->mutex_main);
-/* 	pthread_barrier_wait(&barrier); */
 	/* print_msg(single_philo->data, single_philo->id, 1);
 	sleep(1);
 	print_msg(single_philo->data, single_philo->id, 5); */
-	if(single_philo->id % 2 != 0)
+	/* if(single_philo->id % 2 != 0)
 	{
 		print_msg(single_philo->data, single_philo->id, 4);
-		custom_wait(single_philo->data, single_philo->data->time_to_eat / 2);
-	}
+		custom_wait(single_philo, single_philo->data->time_to_eat / 2, 1);
+	} */
+	
 	philo_does(philo);
 	return (NULL);
-}
-
-void	check_stop(t_program_data *data)
-{
-	while (1)
-	{
-		pthread_mutex_lock(&data->mutex_stop);
-		if (data->stop_flag)
-		{
-			pthread_mutex_unlock(&data->mutex_stop);
-			break ;
-		}
-		pthread_mutex_unlock(&data->mutex_stop);
-		usleep(10);
-	}
 }
 
 void	run_threads(t_program_data *data)
@@ -174,14 +149,13 @@ void	run_threads(t_program_data *data)
 	pthread_t		th[data->number_of_philosophers];
 
 	i = 0;
-	philo = init_single_philos(data);
+	philo = init_philos(data);
 	if (!philo)
 	{
 		free_all(data, philo);
 		destroy_mutexes(data);
 		return ; // handle error and free
 	}
-/* 	pthread_barrier_init(&barrier, NULL, 201); */
 	pthread_mutex_lock(&data->mutex_main);
 	while (i < data->number_of_philosophers)
 	{
@@ -193,8 +167,7 @@ void	run_threads(t_program_data *data)
 	}
 	data->start_time = get_current_time();
 	pthread_mutex_unlock(&data->mutex_main);
-/* 	pthread_barrier_wait(&barrier); */
-	check_stop(data);
+	check_stop_in_main(data);
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{

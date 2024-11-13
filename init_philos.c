@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_single_philo.c                                :+:      :+:    :+:   */
+/*   init_philos.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 22:45:28 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/13 12:09:28 by irychkov         ###   ########.fr       */
+/*   Created: 2024/11/13 15:10:57 by irychkov          #+#    #+#             */
+/*   Updated: 2024/11/13 15:58:20 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_single_philo *init_single_philos(t_program_data *data)
+t_single_philo *init_philos(t_program_data *data)
 {
 	int				i;
 	t_single_philo	*philo;
