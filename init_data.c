@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/12 16:48:47 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:22:40 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ t_program_data	*init_data(int ac, char *av[])
 	*(int *)&data->time_to_eat = time_to_eat;
 	*(int *)&data->time_to_sleep = time_to_sleep;
 	*(int *)&data->number_of_times_each_philosopher_must_eat = times_each_must_eat;
+	if (!is_valid_data(data))
+	{
+		free(data);
+		return NULL;
+	}
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
 	if (!data->forks) {
 		free(data);
@@ -62,11 +67,6 @@ t_program_data	*init_data(int ac, char *av[])
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
-	}
-	if (!is_valid_data(data))
-	{
-		free(data);
-		return NULL;
 	}
 	return data;
 }

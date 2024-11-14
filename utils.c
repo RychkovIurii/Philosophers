@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 17:42:13 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 20:49:36 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	is_stop_in_threads(t_program_data *data)
 	return (0);
 }
 
-void	custom_wait(t_single_philo *philo, size_t time_to_wait, int does_eat)
+void	custom_wait(t_philo *philo, size_t time_to_wait)
 {
 	size_t	start_time;
 	size_t	current_time;
@@ -47,36 +47,42 @@ void	custom_wait(t_single_philo *philo, size_t time_to_wait, int does_eat)
 		current_time = get_current_time();
 		if (current_time - start_time >= time_to_wait)
 			break ;
-		if (!does_eat)
-			check_starving(philo , current_time);
 		if (is_stop_in_threads(philo->data))
 			break ;
 		usleep(10);
 	}
 }
 
-void	check_starving(t_single_philo *philo, size_t current_time)
+int	check_starving(t_program_data *data, t_philo *philos)
 {
 	int		i;
 	size_t	current_time;
 
-	current_time = get_current_time();
-	i = philo->data->number_of_philosophers;
-	while (i)
+	i = 0;
+	while (i < data->number_of_philosophers)
 	{
-		if ((current_time - philo[i]->last_meal_time) > (size_t)philo[i]->data->time_to_die)
+		current_time = get_current_time();
+		pthread_mutex_lock(&data->mutex_main);
+		if ((current_time - philos[i].last_meal_time) > (size_t)data->time_to_die)
 		{
-			print_msg(philo->data, philo->id, 5);
+			pthread_mutex_unlock(&data->mutex_main);
+			print_msg(philos[i].data, philos[i].id, 5);
+			return (1);
 		}
+		pthread_mutex_unlock(&data->mutex_main);
+		i++;
 	}
+	return (0);
 }
 
-void	check_stop_in_main(t_program_data *data, t_single_philo *philo)
+void	check_stop_in_main(t_program_data *data, t_philo *philos)
 {
 	while (1)
 	{
+		usleep(100);
+		if (check_starving(data, philos))
+			break ;
 		if (is_stop_in_threads(data))
 			break ;
-		usleep(100);
 	}
 }
