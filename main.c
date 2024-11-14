@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 20:35:12 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 21:12:54 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,6 @@ void	*routine(void *arg)
 	t_philo *philo;
 
 	philo = (t_philo *)arg;
-	pthread_mutex_lock(&philo->data->mutex_main);
-	philo->last_meal_time = philo->data->start_time;
-	pthread_mutex_unlock(&philo->data->mutex_main);
 	if(philo->id % 2 != 0)
 	{
 		print_msg(philo->data, philo->id, 4);
@@ -148,15 +145,16 @@ void	run_threads(t_program_data *data)
 		return ; // handle error and free
 	}
 	pthread_mutex_lock(&data->mutex_main);
+	data->start_time = get_current_time();
 	while (i < data->number_of_philosophers)
 	{
+		philos[i].last_meal_time = data->start_time;
 		if (pthread_create(&th[i], NULL, &routine, (void *)&philos[i]) != 0)
 		{
 			perror("pthread_create failed");
 		}
 		i++;
 	}
-	data->start_time = get_current_time();
 	pthread_mutex_unlock(&data->mutex_main);
 	check_stop_in_main(data, philos);
 	i = 0;
