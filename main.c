@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 21:12:54 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 23:57:27 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 		data->stop_flag = 1;
 		pthread_mutex_unlock(&data->mutex_stop);
 		pthread_mutex_unlock(&data->mutex_print);
-		usleep(100);
+		usleep(500);
 		return ;
 	}
 	pthread_mutex_unlock(&data->mutex_print);

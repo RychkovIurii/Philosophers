@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 19:52:46 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:28:16 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILO_H
 
 #include <unistd.h>
+#include <limits.h>
 #include <sys/time.h>
 #include <string.h>
 #include <stdio.h>

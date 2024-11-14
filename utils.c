@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 20:49:36 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 23:57:33 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	custom_wait(t_philo *philo, size_t time_to_wait)
 			break ;
 		if (is_stop_in_threads(philo->data))
 			break ;
-		usleep(10);
+		usleep(500);
 	}
 }
 
@@ -79,7 +79,7 @@ void	check_stop_in_main(t_program_data *data, t_philo *philos)
 {
 	while (1)
 	{
-		usleep(100);
+		usleep(500);
 		if (check_starving(data, philos))
 			break ;
 		if (is_stop_in_threads(data))
