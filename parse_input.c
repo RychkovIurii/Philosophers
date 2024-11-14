@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:40:37 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/11 19:30:50 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:27:48 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,36 +25,32 @@ static int	is_valid_num(char *str)
 	int	i;
 
 	i = 0;
-	if (str[0] == '-')
+	if (str[0] == '\0')
 		return (0);
-	if (str[0] == '+')
-		i++;
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
 			return (0);
 		i++;
 	}
-	return (i);
+	return (1);
 }
 
 int	converter(char *str)
 {
-	long long int	check;
 	long long int	result;
 	int				i;
-	int				len;
 
-	result = 0;
 	i = 0;
-	len = is_valid_num(str);
-	while (i <= len && (str[i] >= '0' && str[i] <= '9'))
+	result = 0;
+	if (!is_valid_num(str))
+		return (-1);
+	while (str[i] && (str[i] >= '0' && str[i] <= '9'))
 	{
-		check = result * 10 + (str[i] - '0');
-		if (check / 10 != result)
-			return (0);
-		result = check;
+		result = result * 10 + (str[i] - '0');
+		if (result > INT_MAX)
+			return (-1);
 		i++;
 	}
-	return (result);
+	return ((int)result);
 }
