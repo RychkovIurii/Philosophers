@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/13 19:07:59 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 17:42:13 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,23 +57,24 @@ void	custom_wait(t_single_philo *philo, size_t time_to_wait, int does_eat)
 
 void	check_starving(t_single_philo *philo, size_t current_time)
 {
-	if ((current_time - philo->last_meal_time) > (size_t)philo->data->time_to_die)
+	int		i;
+	size_t	current_time;
+
+	current_time = get_current_time();
+	i = philo->data->number_of_philosophers;
+	while (i)
 	{
-		print_msg(philo->data, philo->id, 5);
+		if ((current_time - philo[i]->last_meal_time) > (size_t)philo[i]->data->time_to_die)
+		{
+			print_msg(philo->data, philo->id, 5);
+		}
 	}
 }
 
-void	check_stop_in_main(t_program_data *data)
+void	check_stop_in_main(t_program_data *data, t_single_philo *philo)
 {
 	while (1)
 	{
-		pthread_mutex_lock(&data->mutex_main);
-		if (data->have_eaten == data->number_of_philosophers)
-		{
-			pthread_mutex_unlock(&data->mutex_main);
-			break ;
-		}
-		pthread_mutex_unlock(&data->mutex_main);
 		if (is_stop_in_threads(data))
 			break ;
 		usleep(100);

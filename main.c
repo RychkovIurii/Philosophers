@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/13 19:04:10 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 17:42:00 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,38 +86,32 @@ void	philo_does(t_single_philo *single_philo)
 	{
 		if (is_stop_in_threads(single_philo->data))
 			break ;
-		if (single_philo->id % 2 == 0) {
-			pthread_mutex_lock(single_philo->left_fork);
-			print_msg(single_philo->data, single_philo->id, 1);
-			pthread_mutex_lock(single_philo->right_fork);
-			print_msg(single_philo->data, single_philo->id, 1);
-		} else {
-			pthread_mutex_lock(single_philo->right_fork);
-			print_msg(single_philo->data, single_philo->id, 1);
-			pthread_mutex_lock(single_philo->left_fork);
-			print_msg(single_philo->data, single_philo->id, 1);
-		}
-		/* pthread_mutex_lock(single_philo->right_fork);
+		pthread_mutex_lock(single_philo->left_fork);
 		print_msg(single_philo->data, single_philo->id, 1);
-		pthread_mutex_lock(single_philo->left_fork); */
+		pthread_mutex_lock(single_philo->right_fork);
 		print_msg(single_philo->data, single_philo->id, 1);
 		print_msg(single_philo->data, single_philo->id, 2);
 		single_philo->last_meal_time = get_current_time();
 		single_philo->times_eaten++;
 		custom_wait(single_philo, single_philo->data->time_to_eat, 1);
-		pthread_mutex_unlock(single_philo->right_fork);
 		pthread_mutex_unlock(single_philo->left_fork);
+		pthread_mutex_unlock(single_philo->right_fork);
 		if (single_philo->must_eat == single_philo->times_eaten)
-			break;
+		{
+			single_philo->data->have_eaten++;
+			if (single_philo->data->have_eaten == single_philo->data->number_of_philosophers)
+			{
+				pthread_mutex_lock(&single_philo->data->mutex_stop);
+				single_philo->data->stop_flag = 1;
+				pthread_mutex_unlock(&single_philo->data->mutex_stop);
+			}
+		}
 		print_msg(single_philo->data, single_philo->id, 3);
 		custom_wait(single_philo, single_philo->data->time_to_sleep, 0);
 		print_msg(single_philo->data, single_philo->id, 4);
 		if (single_philo->must_eat != -1)
 			times--;
 	}
-	pthread_mutex_lock(&single_philo->data->mutex_main);
-	single_philo->data->have_eaten++;
-	pthread_mutex_unlock(&single_philo->data->mutex_main);
 	/* print_msg(single_philo->data, single_philo->id, 5); */
 }
 
@@ -129,15 +123,11 @@ void	*routine(void *philo)
 	pthread_mutex_lock(&single_philo->data->mutex_main);
 	single_philo->last_meal_time = single_philo->data->start_time;
 	pthread_mutex_unlock(&single_philo->data->mutex_main);
-	/* print_msg(single_philo->data, single_philo->id, 1);
-	sleep(1);
-	print_msg(single_philo->data, single_philo->id, 5); */
-	/* if(single_philo->id % 2 != 0)
+	if(single_philo->id % 2 != 0)
 	{
 		print_msg(single_philo->data, single_philo->id, 4);
-		custom_wait(single_philo, single_philo->data->time_to_eat / 2, 1);
-	} */
-	
+		custom_wait(single_philo, single_philo->data->time_to_eat, 0);
+	}
 	philo_does(philo);
 	return (NULL);
 }
@@ -167,7 +157,7 @@ void	run_threads(t_program_data *data)
 	}
 	data->start_time = get_current_time();
 	pthread_mutex_unlock(&data->mutex_main);
-	check_stop_in_main(data);
+	check_stop_in_main(data, philo);
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
