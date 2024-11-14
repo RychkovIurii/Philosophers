@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:47:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 19:29:25 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:34:28 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,13 @@
 
 int	manual(void)
 {
-	write(1, "Usage ./philo number_of_philosophers time_to_die time_to_eat \
-time_to_sleep [number_of_times_each_philosopher_must_eat]\n", 119);
+	printf("Usage ./philo\tnum_of_philos ms_to_die ms_to_eat \
+ms_to_sleep num_of_times_each_must_eat\nWhere:\n");
+	printf("\tnum_of_philos: > 0\n");
+	printf("\ttime_to_die: > 0\n");
+	printf("\ttime_to_eat: > 0\n");
+	printf("\ttime_to_sleep: > 0\n");
+	printf("\tnum_must_eat(optional): > 0\n");
 	return (0);
 }
 
