@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 20:49:36 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:18:12 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,14 @@ int	check_starving(t_program_data *data, t_philo *philos)
 	while (i < data->number_of_philosophers)
 	{
 		current_time = get_current_time();
-		pthread_mutex_lock(&data->mutex_main);
+		pthread_mutex_lock(&data->mutex_last_meal);
 		if ((current_time - philos[i].last_meal_time) > (size_t)data->time_to_die)
 		{
-			pthread_mutex_unlock(&data->mutex_main);
+			pthread_mutex_unlock(&data->mutex_last_meal);
 			print_msg(philos[i].data, philos[i].id, 5);
 			return (1);
 		}
-		pthread_mutex_unlock(&data->mutex_main);
+		pthread_mutex_unlock(&data->mutex_last_meal);
 		i++;
 	}
 	return (0);
@@ -77,12 +77,13 @@ int	check_starving(t_program_data *data, t_philo *philos)
 
 void	check_stop_in_main(t_program_data *data, t_philo *philos)
 {
+	usleep(200000);
 	while (1)
 	{
-		usleep(100);
 		if (check_starving(data, philos))
 			break ;
 		if (is_stop_in_threads(data))
 			break ;
+		usleep(50);
 	}
 }

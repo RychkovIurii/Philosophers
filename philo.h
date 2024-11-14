@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 19:52:46 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:11:03 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,16 @@
 
 typedef struct s_program_data
 {
-	const int		number_of_philosophers;
-	const int		time_to_die;
-	const int		time_to_eat;
-	const int		time_to_sleep;
-	const int		number_of_times_each_philosopher_must_eat;
+	int		number_of_philosophers;
+	int		time_to_die;
+	int		time_to_eat;
+	int		time_to_sleep;
+	int		number_of_times_each_philosopher_must_eat;
 	size_t			start_time;
 	int				have_eaten;
 	int				stop_flag;
 	pthread_mutex_t	mutex_main;
+	pthread_mutex_t	mutex_last_meal;
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	mutex_stop;
 	pthread_mutex_t	*forks;

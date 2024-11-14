@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 19:22:40 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:11:59 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	is_valid_data(const t_program_data *data)
 	return (1);
 }
 
-t_program_data	*init_data(int ac, char *av[])
+/* t_program_data	*init_data(int ac, char *av[])
 {
 	int				i;
 	int				philosophers;
@@ -63,6 +63,47 @@ t_program_data	*init_data(int ac, char *av[])
 	pthread_mutex_init(&data->mutex_print, NULL);
 	pthread_mutex_init(&data->mutex_stop, NULL);
 	pthread_mutex_init(&data->mutex_main, NULL);
+	pthread_mutex_init(&data->mutex_last_meal, NULL);
+	while (i < data->number_of_philosophers)
+	{
+		pthread_mutex_init(&data->forks[i], NULL);
+		i++;
+	}
+	return data;
+} */
+
+t_program_data	*init_data(int ac, char *av[])
+{
+	int				i;
+	t_program_data	*data;
+
+	i = 0;
+	data = malloc(sizeof(t_program_data));
+	if (!data)
+		return (NULL);
+	//memset(data, 0, sizeof(t_program_data));
+	data->number_of_philosophers = converter(av[1]);
+	data->time_to_die = converter(av[2]);
+	data->time_to_eat = converter(av[3]);
+	data->time_to_sleep = converter(av[4]);
+	if (ac == 6)
+		data->number_of_times_each_philosopher_must_eat = converter(av[5]);
+	else
+		data->number_of_times_each_philosopher_must_eat = -1;
+	if (!is_valid_data(data))
+	{
+		free(data);
+		return (NULL);
+	}
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
+	if (!data->forks) {
+		free(data);
+		return NULL;
+	}
+	pthread_mutex_init(&data->mutex_print, NULL);
+	pthread_mutex_init(&data->mutex_stop, NULL);
+	pthread_mutex_init(&data->mutex_main, NULL);
+	pthread_mutex_init(&data->mutex_last_meal, NULL);
 	while (i < data->number_of_philosophers)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
