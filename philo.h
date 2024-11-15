@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 00:28:16 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 13:44:35 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int				manual(void);
 int				converter(char *str);
 t_program_data	*init_data(int ac, char *av[]);
 t_philo			*init_philos(t_program_data *data);
+void			philo_does(t_philo *philo);
 void			destroy_mutexes(t_program_data *data);
 void			free_all(t_program_data *data, t_philo *philos);
 size_t			get_current_time(void);
