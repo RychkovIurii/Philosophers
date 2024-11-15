@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:47:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 14:37:40 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:12:42 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	manual(void)
 {
-	write(2, "\nError: invalid arguments\n", 25);
+	write(2, "\nError: invalid arguments\n\n", 27);
 	printf("Usage ./philo\tnum_of_philos ms_to_die ms_to_eat \
 ms_to_sleep num_of_times_each_must_eat\nWhere:\n");
 	printf("\tnum_of_philos: > 0\n");
