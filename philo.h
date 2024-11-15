@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 13:44:35 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 14:47:21 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ typedef struct s_program_data
 	pthread_mutex_t	*forks;
 }	t_program_data;
 
-typedef struct s_philo {
+typedef struct s_philo
+{
 	int					id;
 	int					times_eaten;
 	int					must_eat;
@@ -48,8 +49,17 @@ typedef struct s_philo {
 	t_program_data		*data;
 } t_philo;
 
+typedef struct s_params
+{
+	int	philosophers;
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
+	int	must_eat;
+}	t_params;
+
 int				manual(void);
-int				converter(char *str);
+t_params		parse_arguments(int ac, char *av[]);
 t_program_data	*init_data(int ac, char *av[]);
 t_philo			*init_philos(t_program_data *data);
 void			philo_does(t_philo *philo);

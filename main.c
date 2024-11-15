@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 13:45:27 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 14:36:49 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	join_threads(t_program_data *data, t_philo *philos)
 	}
 }
 
-void	run_threads(t_program_data *data)
+int	run_threads(t_program_data *data)
 {
 	t_philo	*philos;
 
@@ -68,7 +68,7 @@ void	run_threads(t_program_data *data)
 	{
 		free_all(data, philos);
 		destroy_mutexes(data);
-		return ; // handle error and free
+		return (1);
 	}
 	pthread_mutex_lock(&data->mutex_main);
 	data->start_time = get_current_time();
@@ -78,6 +78,7 @@ void	run_threads(t_program_data *data)
 	join_threads(data, philos);
 	destroy_mutexes(data);
 	free_all(data, philos);
+	return (0);
 }
 
 int	main(int ac, char *av[])
@@ -88,7 +89,6 @@ int	main(int ac, char *av[])
 		return (manual());
 	data = init_data(ac, av);
 	if (!data)
-		return (manual());
-	run_threads(data);
-	return (0);
+		return (1);
+	return (run_threads(data));
 }

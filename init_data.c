@@ -6,67 +6,108 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 19:22:40 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 14:48:08 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	is_valid_data(const t_program_data *data)
+static int	initialize_mutexes(t_program_data *data)
 {
-	if (data->number_of_philosophers < 1 || data->time_to_die < 1
-		|| data->time_to_eat < 1 || data->time_to_sleep < 1)
-		return (0);
-	if (data->number_of_times_each_philosopher_must_eat == 0)
-		return (0);
-	return (1);
+	if (pthread_mutex_init(&data->mutex_print, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&data->mutex_stop, NULL) != 0) {
+		pthread_mutex_destroy(&data->mutex_print);
+		return (1);
+	}
+	if (pthread_mutex_init(&data->mutex_main, NULL) != 0) {
+		pthread_mutex_destroy(&data->mutex_print);
+		pthread_mutex_destroy(&data->mutex_stop);
+		return (1);
+	}
+	return (0);
+}
+
+static int	initialize_forks(t_program_data *data)
+{
+	int	i;
+
+	i = 0;
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
+	if (!data->forks)
+		return (1);
+	while (i < data->number_of_philosophers)
+	{
+		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
+		{
+			while (i > 0)
+				pthread_mutex_destroy(&data->forks[--i]);
+			free(data->forks);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+static void set_data_fields(t_program_data *data, t_params *params)
+{
+	*(int *)&data->number_of_philosophers = params->philosophers;
+	*(int *)&data->time_to_die = params->time_to_die;
+	*(int *)&data->time_to_eat = params->time_to_eat;
+	*(int *)&data->time_to_sleep = params->time_to_sleep;
+	*(int *)&data->number_of_times_each_philosopher_must_eat = params->must_eat;
 }
 
 t_program_data	*init_data(int ac, char *av[])
 {
-	int				i;
-	int				philosophers;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				times_each_must_eat;
+	t_params		params;
 	t_program_data	*data;
 
-	i = 0;
-	philosophers = converter(av[1]);
-	time_to_die = converter(av[2]);
-	time_to_eat = converter(av[3]);
-	time_to_sleep = converter(av[4]);
-	if (ac == 6)
-		times_each_must_eat = converter(av[5]);
-	else
-		times_each_must_eat = -1;
+	params = parse_arguments(ac, av);
+	if (params.philosophers == -1)
+		return (NULL);
 	data = malloc(sizeof(t_program_data));
 	if (!data)
-		return NULL;
+		return (NULL);
 	memset(data, 0, sizeof(t_program_data));
-	*(int *)&data->number_of_philosophers = philosophers;
-	*(int *)&data->time_to_die = time_to_die;
-	*(int *)&data->time_to_eat = time_to_eat;
-	*(int *)&data->time_to_sleep = time_to_sleep;
-	*(int *)&data->number_of_times_each_philosopher_must_eat = times_each_must_eat;
-	if (!is_valid_data(data))
+	set_data_fields(data, &params);
+	if (initialize_mutexes(data))
 	{
 		free(data);
-		return NULL;
+		return (NULL);
 	}
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
-	if (!data->forks) {
+	if (initialize_forks(data))
+	{
+		pthread_mutex_destroy(&data->mutex_print);
+		pthread_mutex_destroy(&data->mutex_stop);
+		pthread_mutex_destroy(&data->mutex_main);
 		free(data);
-		return NULL;
+		return (NULL);
 	}
-	pthread_mutex_init(&data->mutex_print, NULL);
-	pthread_mutex_init(&data->mutex_stop, NULL);
-	pthread_mutex_init(&data->mutex_main, NULL);
+	return (data);
+}
+
+t_philo *init_philos(t_program_data *data)
+{
+	int		i;
+	t_philo	*philos;
+
+	i = 0;
+	philos = malloc(sizeof(t_philo) * data->number_of_philosophers);
+	if (!philos)
+		return (NULL);
+	memset(philos, 0, sizeof(t_philo) * data->number_of_philosophers);
 	while (i < data->number_of_philosophers)
 	{
-		pthread_mutex_init(&data->forks[i], NULL);
+		philos[i].id = i + 1;
+		philos[i].times_eaten = 0;
+		philos[i].must_eat = (int)data->number_of_times_each_philosopher_must_eat;
+		philos[i].last_meal_time = data->start_time;
+		philos[i].left_fork = &data->forks[i];
+		philos[i].right_fork = &data->forks[(i + 1) % data->number_of_philosophers];
+		philos[i].data = data;
 		i++;
 	}
-	return data;
+	return (philos);
 }

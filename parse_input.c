@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:40:37 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 00:27:48 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 14:44:31 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	is_valid_num(char *str)
 	return (1);
 }
 
-int	converter(char *str)
+static int	converter(char *str)
 {
 	long long int	result;
 	int				i;
@@ -53,4 +53,34 @@ int	converter(char *str)
 		i++;
 	}
 	return ((int)result);
+}
+
+static int	is_valid_data(t_params *params)
+{
+	if (params->philosophers < 1 || params->time_to_die < 1
+		|| params->time_to_eat < 1 || params->time_to_sleep < 1)
+		return (0);
+	if (params->must_eat == 0)
+		return (0);
+	return (1);
+}
+
+t_params	parse_arguments(int ac, char *av[])
+{
+	t_params	params;
+
+	params.philosophers = converter(av[1]);
+	params.time_to_die = converter(av[2]);
+	params.time_to_eat = converter(av[3]);
+	params.time_to_sleep = converter(av[4]);
+	if (ac == 6)
+		params.must_eat = converter(av[5]);
+	else
+		params.must_eat = -1;
+	if (!is_valid_data(&params))
+	{
+		manual();
+		params.philosophers = -1;
+	}
+	return (params);
 }
