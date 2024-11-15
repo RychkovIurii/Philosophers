@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 15:24:00 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 16:31:15 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,10 @@ t_program_data	*init_data(int ac, char *av[])
 		return (NULL);
 	data = malloc(sizeof(t_program_data));
 	if (!data)
-		return (error_and_return("Error: malloc failed\n", 0));
+	{
+		(void)error_and_return("Error: malloc failed\n", 0);
+		return (NULL);
+	}
 	memset(data, 0, sizeof(t_program_data));
 	set_data_fields(data, &params);
 	if (initialize_mutexes(data))
@@ -96,7 +99,10 @@ t_philo *init_philos(t_program_data *data)
 	i = 0;
 	philos = malloc(sizeof(t_philo) * data->number_of_philosophers);
 	if (!philos)
-		return (error_and_return("Error: malloc failed\n", 0));
+	{
+		(void)error_and_return("Error: malloc failed\n", 0);
+		return (NULL);
+	}
 	memset(philos, 0, sizeof(t_philo) * data->number_of_philosophers);
 	while (i < data->number_of_philosophers)
 	{
