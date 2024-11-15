@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 23:57:33 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:43:16 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ size_t	get_current_time(void)
 	size_t				current_time;
 	struct timeval		time;
 
-	gettimeofday(&time, NULL);
+	if (gettimeofday(&time, NULL) != 0)
+		write(2, "Error: gettimeofday failed\n", 27);
 	current_time = time.tv_sec * 1000 + time.tv_usec / 1000;
 	return (current_time);
 }

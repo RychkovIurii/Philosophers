@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 14:48:08 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:24:00 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 static int	initialize_mutexes(t_program_data *data)
 {
 	if (pthread_mutex_init(&data->mutex_print, NULL) != 0)
-		return (1);
+		return (error_and_return("Error: mutex init failed\n", 1));
 	if (pthread_mutex_init(&data->mutex_stop, NULL) != 0) {
 		pthread_mutex_destroy(&data->mutex_print);
-		return (1);
+		return (error_and_return("Error: mutex init failed\n", 1));
 	}
 	if (pthread_mutex_init(&data->mutex_main, NULL) != 0) {
 		pthread_mutex_destroy(&data->mutex_print);
 		pthread_mutex_destroy(&data->mutex_stop);
-		return (1);
+		return (error_and_return("Error: mutex init failed\n", 1));
 	}
 	return (0);
 }
@@ -35,7 +35,7 @@ static int	initialize_forks(t_program_data *data)
 	i = 0;
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
 	if (!data->forks)
-		return (1);
+		return (error_and_return("Error: malloc failed\n", 1));
 	while (i < data->number_of_philosophers)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
@@ -43,7 +43,7 @@ static int	initialize_forks(t_program_data *data)
 			while (i > 0)
 				pthread_mutex_destroy(&data->forks[--i]);
 			free(data->forks);
-			return (1);
+			return (error_and_return("Error: mutex init failed\n", 1));
 		}
 		i++;
 	}
@@ -69,7 +69,7 @@ t_program_data	*init_data(int ac, char *av[])
 		return (NULL);
 	data = malloc(sizeof(t_program_data));
 	if (!data)
-		return (NULL);
+		return (error_and_return("Error: malloc failed\n", 0));
 	memset(data, 0, sizeof(t_program_data));
 	set_data_fields(data, &params);
 	if (initialize_mutexes(data))
@@ -96,7 +96,7 @@ t_philo *init_philos(t_program_data *data)
 	i = 0;
 	philos = malloc(sizeof(t_philo) * data->number_of_philosophers);
 	if (!philos)
-		return (NULL);
+		return (error_and_return("Error: malloc failed\n", 0));
 	memset(philos, 0, sizeof(t_philo) * data->number_of_philosophers);
 	while (i < data->number_of_philosophers)
 	{

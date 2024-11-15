@@ -6,11 +6,27 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:47:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 15:12:42 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:20:22 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+size_t	ft_strlen(char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+int	error_and_return(char *msg, int error_code)
+{
+	write(2, msg, ft_strlen(msg));
+	return (error_code);
+}
 
 int	manual(void)
 {
