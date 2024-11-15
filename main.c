@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 15:39:49 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:52:38 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 static void	*routine(void *arg)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if(philo->id % 2 != 0)
+	if (philo->id % 2 != 0)
 	{
 		print_msg(philo->data, philo->id, 4);
 		custom_wait(philo, philo->data->time_to_eat);
@@ -34,7 +34,8 @@ static int	create_threads(t_program_data *data, t_philo *philos)
 	while (i < data->number_of_philosophers)
 	{
 		philos[i].last_meal_time = data->start_time;
-		if (pthread_create(&philos[i].thread_id, NULL, &routine, (void *)&philos[i]) != 0)
+		if (pthread_create(&philos[i].thread_id, NULL,
+				&routine, (void *)&philos[i]) != 0)
 		{
 			while (i > 0)
 				pthread_join(philos[--i].thread_id, NULL);
@@ -94,6 +95,7 @@ static int	run_threads(t_program_data *data)
 int	main(int ac, char *av[])
 {
 	t_program_data	*data;
+
 	if (ac < 5 || ac > 6)
 		return (manual());
 	data = init_data(ac, av);

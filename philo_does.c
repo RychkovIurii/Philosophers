@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 13:21:52 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 13:35:48 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 18:00:12 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 static void	check_have_eaten(t_philo *philo)
 {
 	if (philo->must_eat == philo->times_eaten)
+	{
+		philo->data->have_eaten++;
+		if (philo->data->have_eaten == philo->data->number_of_philosophers)
 		{
-			philo->data->have_eaten++;
-			if (philo->data->have_eaten == philo->data->number_of_philosophers)
-			{
-				pthread_mutex_lock(&philo->data->mutex_stop);
-				philo->data->stop_flag = 1;
-				pthread_mutex_unlock(&philo->data->mutex_stop);
-			}
+			pthread_mutex_lock(&philo->data->mutex_stop);
+			philo->data->stop_flag = 1;
+			pthread_mutex_unlock(&philo->data->mutex_stop);
 		}
+	}
 }
 
 static void	print_died_set_flag(t_program_data *data, int id, size_t ms)
@@ -35,7 +35,7 @@ static void	print_died_set_flag(t_program_data *data, int id, size_t ms)
 	usleep(500);
 }
 
-void	print_msg(t_program_data *data, int id, int	message_code)
+void	print_msg(t_program_data *data, int id, int message_code)
 {
 	size_t	timestamp_in_ms;
 
@@ -43,7 +43,7 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 	if (is_stop_in_threads(data))
 	{
 		pthread_mutex_unlock(&data->mutex_print);
-		return;
+		return ;
 	}
 	timestamp_in_ms = get_current_time() - data->start_time;
 	if (message_code == 1)

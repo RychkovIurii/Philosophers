@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 16:31:15 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:59:11 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@ static int	initialize_mutexes(t_program_data *data)
 {
 	if (pthread_mutex_init(&data->mutex_print, NULL) != 0)
 		return (error_and_return("Error: mutex init failed\n", 1));
-	if (pthread_mutex_init(&data->mutex_stop, NULL) != 0) {
+	if (pthread_mutex_init(&data->mutex_stop, NULL) != 0)
+	{
 		pthread_mutex_destroy(&data->mutex_print);
 		return (error_and_return("Error: mutex init failed\n", 1));
 	}
-	if (pthread_mutex_init(&data->mutex_main, NULL) != 0) {
+	if (pthread_mutex_init(&data->mutex_main, NULL) != 0)
+	{
 		pthread_mutex_destroy(&data->mutex_print);
 		pthread_mutex_destroy(&data->mutex_stop);
 		return (error_and_return("Error: mutex init failed\n", 1));
@@ -33,7 +35,8 @@ static int	initialize_forks(t_program_data *data)
 	int	i;
 
 	i = 0;
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
+	data->forks = malloc(sizeof(pthread_mutex_t)
+			* data->number_of_philosophers);
 	if (!data->forks)
 		return (error_and_return("Error: malloc failed\n", 1));
 	while (i < data->number_of_philosophers)
@@ -50,7 +53,7 @@ static int	initialize_forks(t_program_data *data)
 	return (0);
 }
 
-static void set_data_fields(t_program_data *data, t_params *params)
+static void	set_data_fields(t_program_data *data, t_params *params)
 {
 	*(int *)&data->number_of_philosophers = params->philosophers;
 	*(int *)&data->time_to_die = params->time_to_die;
@@ -91,7 +94,7 @@ t_program_data	*init_data(int ac, char *av[])
 	return (data);
 }
 
-t_philo *init_philos(t_program_data *data)
+t_philo	*init_philos(t_program_data *data)
 {
 	int		i;
 	t_philo	*philos;

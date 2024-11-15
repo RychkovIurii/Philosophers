@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 15:43:16 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:57:20 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	is_stop_in_threads(t_program_data *data)
 	if (data->stop_flag)
 	{
 		pthread_mutex_unlock(&data->mutex_stop);
-		return (1) ;
+		return (1);
 	}
 	pthread_mutex_unlock(&data->mutex_stop);
 	return (0);
@@ -64,7 +64,8 @@ int	check_starving(t_program_data *data, t_philo *philos)
 	{
 		current_time = get_current_time();
 		pthread_mutex_lock(&data->mutex_main);
-		if ((current_time - philos[i].last_meal_time) > (size_t)data->time_to_die)
+		if ((current_time - philos[i].last_meal_time)
+			> (size_t)data->time_to_die)
 		{
 			pthread_mutex_unlock(&data->mutex_main);
 			print_msg(philos[i].data, philos[i].id, 5);
