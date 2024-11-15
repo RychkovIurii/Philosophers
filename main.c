@@ -6,41 +6,20 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/14 23:57:27 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/15 13:17:19 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/* t_program_data	*init_philo(int ac, char *av[])
+void	print_died_set_flag(t_program_data *data, int id, size_t ms)
 {
-	t_program_data	*data;
-
-	data = malloc(sizeof(t_program_data));
-	if (!data)
-		return (NULL);
-	data->number_of_philosophers = converter(av[1]);
-	data->time_to_die = converter(av[2]);
-	data->time_to_eat = converter(av[3]);
-	data->time_to_sleep = converter(av[4]);
-	if (ac == 6)
-		data->number_of_times_each_philosopher_must_eat = converter(av[5]);
-	else
-		data->number_of_times_each_philosopher_must_eat = -1;
-	if (!is_valid_data(data))
-	{
-		free(data);
-		return (NULL);
-	}
-	return (data);
-} */
-/*
-1. timestamp_in_ms X has taken a fork
-2. timestamp_in_ms X is eating
-3. timestamp_in_ms X is sleeping
-4. timestamp_in_ms X is thinking
-5. timestamp_in_ms X died
- */
+	printf("%zu %d died\n", ms, id);
+	pthread_mutex_lock(&data->mutex_stop);
+	data->stop_flag = 1;
+	pthread_mutex_unlock(&data->mutex_stop);
+	usleep(500);
+}
 
 void	print_msg(t_program_data *data, int id, int	message_code)
 {
@@ -62,15 +41,7 @@ void	print_msg(t_program_data *data, int id, int	message_code)
 	else if (message_code == 4)
 		printf("%zu %d is thinking\n", timestamp_in_ms, id);
 	else if (message_code == 5)
-	{
-		printf("%zu %d died\n", timestamp_in_ms, id);
-		pthread_mutex_lock(&data->mutex_stop);
-		data->stop_flag = 1;
-		pthread_mutex_unlock(&data->mutex_stop);
-		pthread_mutex_unlock(&data->mutex_print);
-		usleep(500);
-		return ;
-	}
+		print_died_set_flag(data, id, timestamp_in_ms);
 	pthread_mutex_unlock(&data->mutex_print);
 }
 
