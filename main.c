@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 17:51:03 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 19:55:15 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,13 @@ static int	run_threads(t_program_data *data)
 		return (1);
 	}
 	pthread_mutex_lock(&data->mutex_main);
-	data->start_time = get_current_time();
+	/* data->start_time = get_current_time(); */
 	if (create_threads(data, philos))
 	{
 		pthread_mutex_unlock(&data->mutex_main);
 		return (1);
 	}
+	data->start_time = get_current_time();
 	pthread_mutex_unlock(&data->mutex_main);
 	check_stop_in_main(data);
 	return (join_threads(data, philos));
