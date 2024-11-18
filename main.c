@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 19:55:15 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 20:25:25 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ static void	*routine(void *arg)
 	pthread_mutex_lock(&philo->data->mutex_main);
 	philo->last_meal_time = philo->data->start_time;
 	pthread_mutex_unlock(&philo->data->mutex_main);
+	philo->start_time = philo->last_meal_time;
 	if (philo->id % 2 != 0)
 	{
-		print_msg(philo->data, philo->id, 4);
+		print_msg(philo->data, philo->id, 4, philo->start_time);
 		custom_wait(philo, philo->data->time_to_eat);
 	}
 	philo_does(philo);

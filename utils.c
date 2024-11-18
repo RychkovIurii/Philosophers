@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 20:13:27 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 20:26:08 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	check_starving(t_philo *philo)
 	current_time = get_current_time();
 	if ((current_time - philo->last_meal_time) > philo->time_to_die)
 	{
-		print_msg(philo->data, philo->id, 5);
+		print_msg(philo->data, philo->id, 5, philo->start_time);
 		return (1);
 	}
 	return (0);

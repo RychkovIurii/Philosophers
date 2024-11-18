@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 13:21:52 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 20:11:29 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 20:25:45 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	print_died_set_flag(t_program_data *data, int id, size_t ms)
 	usleep(500);
 }
 
-void	print_msg(t_program_data *data, int id, int message_code)
+void	print_msg(t_program_data *data, int id, int message_code, size_t start_time)
 {
 	size_t	timestamp_in_ms;
 
@@ -49,7 +49,7 @@ void	print_msg(t_program_data *data, int id, int message_code)
 		pthread_mutex_unlock(&data->mutex_print);
 		return ;
 	}
-	timestamp_in_ms = get_current_time() - data->start_time;
+	timestamp_in_ms = get_current_time() - start_time;
 	if (message_code == 1)
 		printf("%zu %d has taken a fork\n", timestamp_in_ms, id);
 	else if (message_code == 2)
@@ -66,10 +66,10 @@ void	print_msg(t_program_data *data, int id, int message_code)
 static void	eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
-	print_msg(philo->data, philo->id, 1);
+	print_msg(philo->data, philo->id, 1, philo->start_time);
 	pthread_mutex_lock(philo->right_fork);
-	print_msg(philo->data, philo->id, 1);
-	print_msg(philo->data, philo->id, 2);
+	print_msg(philo->data, philo->id, 1, philo->start_time);
+	print_msg(philo->data, philo->id, 2, philo->start_time);
 	philo->last_meal_time = get_current_time();
 	philo->times_eaten++;
 	custom_wait(philo, philo->data->time_to_eat);
@@ -86,9 +86,9 @@ void	philo_does(t_philo *philo)
 		eat(philo);
 		if (philo->must_eat != -1)
 			check_have_eaten(philo);
-		print_msg(philo->data, philo->id, 3);
+		print_msg(philo->data, philo->id, 3, philo->start_time);
 		custom_wait(philo, philo->data->time_to_sleep);
-		print_msg(philo->data, philo->id, 4);
+		print_msg(philo->data, philo->id, 4, philo->start_time);
 		//usleep(80);
 	}
 }

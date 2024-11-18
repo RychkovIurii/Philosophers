@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 17:32:12 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 20:25:56 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_philo
 	int					must_eat;
 	size_t				last_meal_time;
 	size_t				time_to_die;
+	size_t				start_time;
 	pthread_t			thread_id;
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
@@ -64,7 +65,7 @@ t_params		parse_arguments(int ac, char *av[]);
 t_philo			*init_philos(t_program_data *data);
 void			philo_does(t_philo *philo);
 void			check_stop_in_main(t_program_data *data);
-void			print_msg(t_program_data *data, int id, int message_code);
+void			print_msg(t_program_data *data, int id, int message_code, size_t start_time);
 int				check_starving(t_philo *philo);
 size_t			get_current_time(void);
 void			custom_wait(t_philo *philo, size_t time_to_wait);
