@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 10:04:30 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 17:51:03 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@ static void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	pthread_mutex_lock(&philo->data->mutex_main);
+	philo->last_meal_time = philo->data->start_time;
+	pthread_mutex_unlock(&philo->data->mutex_main);
 	if (philo->id % 2 != 0)
 	{
 		print_msg(philo->data, philo->id, 4);
@@ -33,7 +36,7 @@ static int	create_threads(t_program_data *data, t_philo *philos)
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
-		philos[i].last_meal_time = data->start_time;
+		//philos[i].last_meal_time = data->start_time;
 		if (pthread_create(&philos[i].thread_id, NULL,
 				&routine, (void *)&philos[i]) != 0)
 		{
@@ -85,7 +88,7 @@ static int	run_threads(t_program_data *data)
 		return (1);
 	}
 	pthread_mutex_unlock(&data->mutex_main);
-	check_stop_in_main(data, philos);
+	check_stop_in_main(data);
 	return (join_threads(data, philos));
 }
 

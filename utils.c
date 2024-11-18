@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 17:57:20 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 17:31:29 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,42 +48,37 @@ void	custom_wait(t_philo *philo, size_t time_to_wait)
 		current_time = get_current_time();
 		if (current_time - start_time >= time_to_wait)
 			break ;
+		if (check_starving(philo))
+			break ;
 		if (is_stop_in_threads(philo->data))
 			break ;
 		usleep(500);
 	}
 }
 
-int	check_starving(t_program_data *data, t_philo *philos)
+int	check_starving(t_philo *philo)
 {
 	int		i;
 	size_t	current_time;
 
 	i = 0;
-	while (i < data->number_of_philosophers)
+	pthread_mutex_lock(&philo->data->mutex_main);
+	current_time = get_current_time();
+	if ((current_time - philo->last_meal_time) > philo->time_to_die)
 	{
-		current_time = get_current_time();
-		pthread_mutex_lock(&data->mutex_main);
-		if ((current_time - philos[i].last_meal_time)
-			> (size_t)data->time_to_die)
-		{
-			pthread_mutex_unlock(&data->mutex_main);
-			print_msg(philos[i].data, philos[i].id, 5);
-			return (1);
-		}
-		pthread_mutex_unlock(&data->mutex_main);
-		i++;
+		pthread_mutex_unlock(&philo->data->mutex_main);
+		print_msg(philo->data, philo->id, 5);
+		return (1);
 	}
+	pthread_mutex_unlock(&philo->data->mutex_main);
 	return (0);
 }
 
-void	check_stop_in_main(t_program_data *data, t_philo *philos)
+void	check_stop_in_main(t_program_data *data)
 {
 	while (1)
 	{
 		usleep(500);
-		if (check_starving(data, philos))
-			break ;
 		if (is_stop_in_threads(data))
 			break ;
 	}
