@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 13:21:52 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 18:00:12 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:53:42 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static void	check_have_eaten(t_philo *philo)
 	if (philo->must_eat == philo->times_eaten)
 	{
 		philo->data->have_eaten++;
+		/* printf("philo->data->have_eaten is %d\n", philo->data->have_eaten); */
 		if (philo->data->have_eaten == philo->data->number_of_philosophers)
 		{
 			pthread_mutex_lock(&philo->data->mutex_stop);
@@ -77,22 +78,24 @@ static void	eat(t_philo *philo)
 
 void	philo_does(t_philo *philo)
 {
-	int	times;
+	/* int	times;
 
 	if (philo->must_eat == -1)
 		times = 1;
 	else
-		times = philo->must_eat;
-	while (times)
+		times = philo->must_eat; */
+	while (1/* times */)
 	{
 		if (is_stop_in_threads(philo->data))
 			break ;
 		eat(philo);
-		check_have_eaten(philo);
+		if (philo->must_eat != -1)
+			check_have_eaten(philo);
 		print_msg(philo->data, philo->id, 3);
 		custom_wait(philo, philo->data->time_to_sleep);
 		print_msg(philo->data, philo->id, 4);
-		if (philo->must_eat != -1)
-			times--;
+		/* if (philo->must_eat != -1)
+			times--; */
+		//usleep(500);
 	}
 }
