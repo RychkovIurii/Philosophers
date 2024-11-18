@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 17:52:38 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:04:30 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,7 @@ static int	join_threads(t_program_data *data, t_philo *philos)
 	while (i < data->number_of_philosophers)
 	{
 		if (pthread_join(philos[i].thread_id, NULL) != 0)
-		{
-			status = 1;
-			(void)error_and_return("Error: pthread_join failed\n", 1);
-		}
+			status = error_and_return("Error: pthread_join failed\n", 1);
 		i++;
 	}
 	destroy_mutexes(data);
@@ -76,8 +73,8 @@ static int	run_threads(t_program_data *data)
 	philos = init_philos(data);
 	if (!philos)
 	{
-		free_all(data, philos);
 		destroy_mutexes(data);
+		free_all(data, philos);
 		return (1);
 	}
 	pthread_mutex_lock(&data->mutex_main);
