@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 17:31:29 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 19:10:01 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,8 @@ void	custom_wait(t_philo *philo, size_t time_to_wait)
 
 int	check_starving(t_philo *philo)
 {
-	int		i;
 	size_t	current_time;
 
-	i = 0;
 	pthread_mutex_lock(&philo->data->mutex_main);
 	current_time = get_current_time();
 	if ((current_time - philo->last_meal_time) > philo->time_to_die)

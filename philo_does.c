@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 13:21:52 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 17:43:24 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/18 19:16:06 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	check_have_eaten(t_philo *philo)
 {
+	//printf("philo->must_eat is %d and philo->times_eaten is %d\n", philo->must_eat, philo->times_eaten);
 	if (philo->must_eat == philo->times_eaten)
 	{
 		philo->data->have_eaten++;
