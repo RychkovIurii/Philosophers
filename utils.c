@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/19 11:25:22 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/19 12:34:17 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,39 @@ void	custom_wait(t_philo *philo, size_t time_to_wait)
 		current_time = get_current_time();
 		if (current_time - start_time >= time_to_wait)
 			break ;
-		if (check_starving(philo))
-			break ;
+		/* if (check_starving(philo))
+			break ; */
 		if (is_stop_in_threads(philo->data))
 			break ;
 		usleep(1000);
 	}
 }
 
-int	check_starving(t_philo *philo)
+int	check_starving(t_program_data *data, t_philo *philos)
+{
+	int		i;
+	size_t	current_time;
+
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		
+		pthread_mutex_lock(&data->mutex_main);
+		current_time = get_current_time();
+		if ((current_time - philos[i].last_meal_time)
+			> (size_t)data->time_to_die)
+		{
+			print_msg(philos[i].data, philos[i].id, 5, data->start_time);
+			pthread_mutex_unlock(&data->mutex_main);
+			return (1);
+		}
+		pthread_mutex_unlock(&data->mutex_main);
+		i++;
+	}
+	return (0);
+}
+
+/* int	check_starving(t_philo *philo)
 {
 	size_t	current_time;
 
@@ -67,14 +91,14 @@ int	check_starving(t_philo *philo)
 		return (1);
 	}
 	return (0);
-}
+} */
 
-void	check_stop_in_main(t_program_data *data)
+void	check_stop_in_main(t_program_data *data, t_philo *philos)
 {
 	while (1)
 	{
 		usleep(10000);
-		if (is_stop_in_threads(data))
+		if (check_starving(data, philos))
 			break ;
 	}
 }

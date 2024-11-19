@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 20:25:25 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/19 12:38:49 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	pthread_mutex_lock(&philo->data->mutex_main);
 	philo->last_meal_time = philo->data->start_time;
-	pthread_mutex_unlock(&philo->data->mutex_main);
 	philo->start_time = philo->last_meal_time;
+	pthread_mutex_unlock(&philo->data->mutex_main);
 	if (philo->id % 2 != 0)
 	{
 		print_msg(philo->data, philo->id, 4, philo->start_time);
@@ -90,7 +90,7 @@ static int	run_threads(t_program_data *data)
 	}
 	data->start_time = get_current_time();
 	pthread_mutex_unlock(&data->mutex_main);
-	check_stop_in_main(data);
+	check_stop_in_main(data, philos);
 	return (join_threads(data, philos));
 }
 
