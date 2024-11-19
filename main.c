@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/19 12:38:49 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/19 16:59:25 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ static int	join_threads(t_program_data *data, t_philo *philos)
 
 static int	run_threads(t_program_data *data)
 {
+	ssize_t	start;
 	t_philo	*philos;
 
 	philos = init_philos(data);
@@ -89,8 +90,9 @@ static int	run_threads(t_program_data *data)
 		return (1);
 	}
 	data->start_time = get_current_time();
+	start = data->start_time;
 	pthread_mutex_unlock(&data->mutex_main);
-	check_stop_in_main(data, philos);
+	check_stop_in_main(data, philos, start);
 	return (join_threads(data, philos));
 }
 
