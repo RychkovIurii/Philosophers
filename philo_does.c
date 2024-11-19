@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 13:21:52 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/19 10:06:31 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/19 11:19:33 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,11 @@ void	print_msg(t_program_data *data, int id, int message_code, size_t start_time
 static void	eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
-	//(void)check_starving(philo);
+	(void)check_starving(philo);
 	print_msg(philo->data, philo->id, 1, philo->start_time);
 	pthread_mutex_lock(philo->right_fork);
-	//(void)check_starving(philo);
 	print_msg(philo->data, philo->id, 1, philo->start_time);
+	(void)check_starving(philo);
 	print_msg(philo->data, philo->id, 2, philo->start_time);
 	philo->last_meal_time = get_current_time();
 	philo->times_eaten++;
