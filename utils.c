@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/20 14:02:13 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:30:15 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	custom_wait(t_philo *philo, size_t time_to_wait)
 			break ;
 		if (is_stop_in_threads(philo->data))
 			break ;
-		usleep(1500);
+		usleep(400);
 	}
 }
 
@@ -68,7 +68,7 @@ int	check_starving(t_program_data *data, t_philo *philos, size_t start_time)
 		if (philos[i].last_meal_time == 0)
 		{
 			pthread_mutex_unlock(&data->mutex_main);
-			usleep(1000);
+			usleep(800);
 			i++;
 			continue ;
 		}
@@ -102,7 +102,7 @@ void	check_stop_in_main(t_program_data *data, t_philo *philos, size_t start_time
 {
 	while (1)
 	{
-		usleep(1000);
+		usleep(800);
 		if (check_starving(data, philos, start_time))
 			break ;
 		if (is_stop_in_threads(data))
