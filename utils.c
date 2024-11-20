@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/20 13:08:16 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 14:02:13 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	custom_wait(t_philo *philo, size_t time_to_wait)
 			break ;
 		if (is_stop_in_threads(philo->data))
 			break ;
-		usleep(1000);
+		usleep(1500);
 	}
 }
 
