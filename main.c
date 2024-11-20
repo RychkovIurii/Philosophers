@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/19 16:59:25 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 17:47:14 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,12 @@ static int	create_threads(t_program_data *data, t_philo *philos)
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
-		//philos[i].last_meal_time = data->start_time;
 		if (pthread_create(&philos[i].thread_id, NULL,
 				&routine, (void *)&philos[i]) != 0)
 		{
 			while (i > 0)
 				pthread_join(philos[--i].thread_id, NULL);
-			destroy_mutexes(data);
-			free_all(data, philos);
+			destroy_free_all(data, philos);
 			return (error_and_return("Error: pthread_create failed\n", 1));
 		}
 		i++;
@@ -65,8 +63,7 @@ static int	join_threads(t_program_data *data, t_philo *philos)
 			status = error_and_return("Error: pthread_join failed\n", 1);
 		i++;
 	}
-	destroy_mutexes(data);
-	free_all(data, philos);
+	destroy_free_all(data, philos);
 	return (status);
 }
 
@@ -78,12 +75,10 @@ static int	run_threads(t_program_data *data)
 	philos = init_philos(data);
 	if (!philos)
 	{
-		destroy_mutexes(data);
-		free_all(data, philos);
+		destroy_free_all(data, philos);
 		return (1);
 	}
 	pthread_mutex_lock(&data->mutex_main);
-	/* data->start_time = get_current_time(); */
 	if (create_threads(data, philos))
 	{
 		pthread_mutex_unlock(&data->mutex_main);

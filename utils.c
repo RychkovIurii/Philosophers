@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/20 16:30:15 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 18:02:35 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ void	custom_wait(t_philo *philo, size_t time_to_wait)
 	size_t	current_time;
 
 	start_time = get_current_time();
-	/* if (is_stop_in_threads(philo->data))
-		return ; */
 	while (1)
 	{
 		current_time = get_current_time();
@@ -59,9 +57,8 @@ int	check_starving(t_program_data *data, t_philo *philos, size_t start_time)
 	int		i;
 	size_t	current_time;
 
-	i = 0;
-	//usleep(10000 * data->time_to_die - 10000);
-	while (i < data->number_of_philosophers)
+	i = -1;
+	while (++i < data->number_of_philosophers)
 	{
 		pthread_mutex_lock(&data->mutex_main);
 		current_time = get_current_time();
@@ -69,7 +66,6 @@ int	check_starving(t_program_data *data, t_philo *philos, size_t start_time)
 		{
 			pthread_mutex_unlock(&data->mutex_main);
 			usleep(800);
-			i++;
 			continue ;
 		}
 		if ((current_time - philos[i].last_meal_time)
@@ -80,25 +76,12 @@ int	check_starving(t_program_data *data, t_philo *philos, size_t start_time)
 			return (1);
 		}
 		pthread_mutex_unlock(&data->mutex_main);
-		i++;
 	}
 	return (0);
 }
 
-/* int	check_starving(t_philo *philo)
-{
-	size_t	current_time;
-
-	current_time = get_current_time();
-	if ((current_time - philo->last_meal_time) > philo->time_to_die)
-	{
-		print_msg(philo->data, philo->id, 5, philo->start_time);
-		return (1);
-	}
-	return (0);
-} */
-
-void	check_stop_in_main(t_program_data *data, t_philo *philos, size_t start_time)
+void	check_stop_in_main(t_program_data *data, t_philo *philos,
+		size_t start_time)
 {
 	while (1)
 	{

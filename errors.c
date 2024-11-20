@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:47:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/15 17:25:15 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 17:59:53 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,7 @@ ms_to_sleep num_of_times_each_must_eat\nWhere:\n");
 	return (1);
 }
 
-void	free_all(t_program_data *data, t_philo *philos)
-{
-	free(data->forks);
-	free(data);
-	free(philos);
-}
-
-void	destroy_mutexes(t_program_data *data)
+void	destroy_free_all(t_program_data *data, t_philo *philos)
 {
 	int	i;
 
@@ -61,4 +54,16 @@ void	destroy_mutexes(t_program_data *data)
 	pthread_mutex_destroy(&data->mutex_print);
 	pthread_mutex_destroy(&data->mutex_stop);
 	pthread_mutex_destroy(&data->mutex_main);
+	free(data->forks);
+	free(data);
+	free(philos);
+}
+
+void	*init_fork_failure(t_program_data *data)
+{
+	pthread_mutex_destroy(&data->mutex_print);
+	pthread_mutex_destroy(&data->mutex_stop);
+	pthread_mutex_destroy(&data->mutex_main);
+	free(data);
+	return (NULL);
 }

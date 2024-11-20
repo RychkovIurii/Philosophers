@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 13:21:52 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/19 16:50:32 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:34:40 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static void	print_died_set_flag(t_program_data *data, int id, size_t ms)
 	usleep(500);
 }
 
-void	print_msg(t_program_data *data, int id, int message_code, size_t start_time)
+void	print_msg(t_program_data *data, int id, int message_code,
+		size_t start_time)
 {
 	size_t	timestamp_in_ms;
 

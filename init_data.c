@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/18 20:17:42 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 17:58:25 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,7 @@ t_program_data	*init_data(int ac, char *av[])
 		return (NULL);
 	}
 	if (initialize_forks(data))
-	{
-		pthread_mutex_destroy(&data->mutex_print);
-		pthread_mutex_destroy(&data->mutex_stop);
-		pthread_mutex_destroy(&data->mutex_main);
-		free(data);
-		return (NULL);
-	}
+		return (init_fork_failure(data));
 	return (data);
 }
 
@@ -110,11 +104,12 @@ t_philo	*init_philos(t_program_data *data)
 	while (i < data->number_of_philosophers)
 	{
 		philos[i].id = i + 1;
-		philos[i].times_eaten = 0;
 		philos[i].time_to_die = (size_t)data->time_to_die;
-		philos[i].must_eat = (int)data->number_of_times_each_philosopher_must_eat;
+		philos[i].must_eat
+			= (int)data->number_of_times_each_philosopher_must_eat;
 		philos[i].left_fork = &data->forks[i];
-		philos[i].right_fork = &data->forks[(i + 1) % data->number_of_philosophers];
+		philos[i].right_fork
+			= &data->forks[(i + 1) % data->number_of_philosophers];
 		philos[i].data = data;
 		i++;
 	}

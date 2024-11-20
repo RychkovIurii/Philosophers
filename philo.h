@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/19 17:08:47 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/20 17:59:29 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,17 @@ t_program_data	*init_data(int ac, char *av[]);
 t_params		parse_arguments(int ac, char *av[]);
 t_philo			*init_philos(t_program_data *data);
 void			philo_does(t_philo *philo);
-void			check_stop_in_main(t_program_data *data, t_philo *philos, size_t start_time);
-void			print_msg(t_program_data *data, int id, int message_code, size_t start_time);
-int				check_starving(t_program_data *data, t_philo *philos, size_t start_time);
+void			check_stop_in_main(t_program_data *data,
+					t_philo *philos, size_t start_time);
+void			print_msg(t_program_data *data, int id, int message_code,
+					size_t start_time);
+int				check_starving(t_program_data *data, t_philo *philos,
+					size_t start_time);
 size_t			get_current_time(void);
 void			custom_wait(t_philo *philo, size_t time_to_wait);
 int				is_stop_in_threads(t_program_data *data);
-void			free_all(t_program_data *data, t_philo *philos);
-void			destroy_mutexes(t_program_data *data);
+void			destroy_free_all(t_program_data *data, t_philo *philos);
 int				error_and_return(char *msg, int error_code);
+void			*init_fork_failure(t_program_data *data);
 int				manual(void);
 #endif
