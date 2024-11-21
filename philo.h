@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/20 17:59:29 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 12:23:21 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_philo
 	int					id;
 	int					times_eaten;
 	int					must_eat;
+	int					number_of_philosophers;
 	size_t				last_meal_time;
 	size_t				time_to_die;
 	size_t				start_time;

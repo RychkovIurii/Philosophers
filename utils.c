@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/20 18:02:35 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 13:42:12 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,10 @@ int	check_starving(t_program_data *data, t_philo *philos, size_t start_time)
 			continue ;
 		}
 		if ((current_time - philos[i].last_meal_time)
-			> (size_t)data->time_to_die)
+			>= (size_t)data->time_to_die)
 		{
-			pthread_mutex_unlock(&data->mutex_main);
 			print_msg(philos[i].data, philos[i].id, 5, start_time);
+			pthread_mutex_unlock(&data->mutex_main);
 			return (1);
 		}
 		pthread_mutex_unlock(&data->mutex_main);

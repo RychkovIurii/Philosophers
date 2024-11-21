@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 22:45:36 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/20 17:58:25 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 12:24:22 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ t_philo	*init_philos(t_program_data *data)
 	while (i < data->number_of_philosophers)
 	{
 		philos[i].id = i + 1;
+		philos[i].number_of_philosophers = data->number_of_philosophers;
 		philos[i].time_to_die = (size_t)data->time_to_die;
 		philos[i].must_eat
 			= (int)data->number_of_times_each_philosopher_must_eat;
