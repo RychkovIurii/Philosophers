@@ -6,11 +6,17 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 17:02:40 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 17:30:34 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+int	run_philos(t_program_data *data)
+{
+	//close unlink free
+	return (0);
+}
 
 int	main(int ac, char *av[])
 {
@@ -21,5 +27,5 @@ int	main(int ac, char *av[])
 	data = init_data(ac, av);
 	if (!data)
 		return (1);
-	return (run_simulation(data));
+	return (run_philos(data));
 }

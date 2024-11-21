@@ -6,13 +6,13 @@
 #    By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/21 16:48:09 by irychkov          #+#    #+#              #
-#    Updated: 2024/11/21 17:08:01 by irychkov         ###   ########.fr        #
+#    Updated: 2024/11/21 17:13:30 by irychkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo_bonus
 
-SRCS = main_bonus.c parse_input_bonus.c errors_bonus.c
+SRCS = main_bonus.c parse_input_bonus.c init_data_bonus.c errors_bonus.c
 
 OBJS = $(SRCS:.c=.o)
 
