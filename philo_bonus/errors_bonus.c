@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 17:00:23 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 17:15:15 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 17:51:00 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,4 +29,16 @@ int	error_and_return(char *msg, int error_code)
 {
 	write(2, msg, ft_strlen(msg));
 	return (error_code);
+}
+
+void	free_resources(t_program_data *data)
+{
+	free(data->philos);
+	sem_close(data->forks);
+	sem_close(data->print);
+	sem_close(data->start);
+	sem_unlink("/forks");
+	sem_unlink("/print");
+	sem_unlink("/start");
+	free(data);
 }

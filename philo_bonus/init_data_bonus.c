@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 17:11:42 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 17:28:30 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 17:47:50 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,25 @@ static int	initialize_semaphores(t_program_data *data)
 	return (0);
 }
 
+static void	init_philosophers(t_program_data *data)
+{
+	int	i;
+
+	i = 0;
+	data->philos = malloc(sizeof(t_philo) * data->number_of_philosophers);
+	if(!data->philos)
+	{
+		//free all and exit
+	}
+	memset(data->philos, 0, sizeof(t_philo) * data->number_of_philosophers);
+	while (i < data->number_of_philosophers)
+	{
+		data->philos[i].id = i + 1;
+		data->philos[i].data = data;
+		i++;
+	}
+}
+
 t_program_data	*init_data(int ac, char *av[])
 {
 	t_params		params;
@@ -45,8 +64,10 @@ t_program_data	*init_data(int ac, char *av[])
 	}
 	memset(data, 0, sizeof(t_program_data));
 	set_data_fields(data, &params);
+	init_philosophers(data);
 	if (initialize_semaphores(data))
 	{
+		free(data->philos);
 		free(data);
 		return (NULL);
 	}

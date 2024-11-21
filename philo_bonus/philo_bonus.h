@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:48:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 17:26:02 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 17:51:15 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int				manual(void);
 t_params		parse_arguments(int ac, char *av[]);
 t_program_data	*init_data(int ac, char *av[]);
 int				error_and_return(char *msg, int error_code);
+void			free_resources(t_program_data *data);
 
 
 #endif

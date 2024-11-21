@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 17:30:34 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 17:51:48 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	run_philos(t_program_data *data)
 {
 	//close unlink free
+	free_resources(data);
 	return (0);
 }
 
