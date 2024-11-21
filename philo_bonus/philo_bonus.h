@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:48:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 17:51:15 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/21 18:23:50 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,21 @@
 # include <limits.h>
 # include <fcntl.h>
 # include <sys/time.h>
+# include <sys/wait.h>
 # include <string.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <pthread.h>
 # include <semaphore.h>
+
+typedef struct s_philo
+{
+	int id;
+	pid_t pid;
+	int times_eaten;
+	long last_meal_time;
+	struct s_program_data *data;
+}	t_philo;
 
 typedef struct s_program_data
 {
@@ -37,14 +47,7 @@ typedef struct s_program_data
 	t_philo			*philos;
 }	t_program_data;
 
-typedef struct s_philo
-{
-	int id;
-	pid_t pid;
-	int times_eaten;
-	long last_meal_time;
-	t_program_data *data;
-}	t_philo;
+
 
 typedef struct s_params
 {
