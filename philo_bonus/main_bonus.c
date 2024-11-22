@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/22 17:22:11 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/22 17:56:02 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,11 @@ size_t	get_current_time(void)
 
 static void	print_died_exit(t_program_data *data, int id, size_t ms)
 {
-	int i;
+	/* int i; */
 
 	printf("%zu %d died\n", ms, id);
-	i = 0;
+	sem_post(data->start);
+	/* i = 0;
 	while(i < data->number_of_philosophers)
 	{
 		if (id != data->philos[i].id)
@@ -36,7 +37,7 @@ static void	print_died_exit(t_program_data *data, int id, size_t ms)
 		i++;
 	}
 	kill(data->philos[i].id, 9);
-	exit(100);
+	exit(100); */
 }
 
 void	print_msg(t_program_data *data, int id, int message_code,
@@ -72,7 +73,9 @@ void	*monitor_death(void *arg)
 		if ((current_time - philo->last_meal_time) >= (size_t)philo->data->time_to_die)
 		{
 			print_msg(philo->data, philo->id, 5, philo->data->start_time);
+			exit(1);
 		}
+		usleep(1000);
 	}
 	return (NULL);
 
@@ -153,12 +156,11 @@ int	run_philos(t_program_data *data)
 		i++;
 	}
 	//sleep(2);
-	//sem_post(data->start);
+	sem_wait(data->start);
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
-		//kill(data->philos[i].pid, 9);
-		waitpid(data->philos[i].pid, NULL, 0);
+		kill(data->philos[i].pid, 9);
 		i++;
 	}
 	free_resources(data);
