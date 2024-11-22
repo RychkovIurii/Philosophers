@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/22 15:07:51 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/22 16:43:42 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,15 @@ size_t	get_current_time(void)
 
 static void	print_died_exit(t_program_data *data, int id, size_t ms)
 {
-	(void) data;
+	int i;
+
 	printf("%zu %d died\n", ms, id);
+	i = 0;
+	while(i < data->number_of_philosophers)
+	{
+		kill(data->philos[i].pid, 9);
+		i++;
+	}
 	exit(100);
 }
 
@@ -50,8 +57,31 @@ void	print_msg(t_program_data *data, int id, int message_code,
 	sem_post(data->print);
 }
 
+void	*monitor_death(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	size_t	current_time;
+
+	while (1)
+	{
+		current_time = get_current_time();
+		if ((current_time - philo->last_meal_time) >= (size_t)philo->data->time_to_die)
+		{
+			print_msg(philo->data, philo->id, 5, philo->data->start_time);
+		}
+	}
+	return (NULL);
+
+}
+
 void	philosopher_routine_even(t_philo *philo)
 {
+	pthread_t	th;
+	
+	pthread_create(&th, NULL, &monitor_death, (void *)&philo);
+	pthread_detach(th);
 	while(1)
 	{
 		sem_wait(philo->data->forks);
@@ -72,6 +102,10 @@ void	philosopher_routine_even(t_philo *philo)
 
 void	philosopher_routine_odd(t_philo *philo)
 {
+	pthread_t	th;
+
+	pthread_create(&th, NULL, &monitor_death, (void *)&philo);
+	pthread_detach(th);
 	usleep(1000);
 	while(1)
 	{
@@ -116,7 +150,7 @@ int	run_philos(t_program_data *data)
 		}
 		i++;
 	}
-	sleep(1);
+	//sleep(2);
 	//sem_post(data->start);
 	i = 0;
 	while (i < data->number_of_philosophers)
