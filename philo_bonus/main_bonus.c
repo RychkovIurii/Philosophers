@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/22 16:43:42 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/22 17:22:11 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@ static void	print_died_exit(t_program_data *data, int id, size_t ms)
 	i = 0;
 	while(i < data->number_of_philosophers)
 	{
-		kill(data->philos[i].pid, 9);
+		if (id != data->philos[i].id)
+			kill(data->philos[i].pid, 9);
 		i++;
 	}
+	kill(data->philos[i].id, 9);
 	exit(100);
 }
 
