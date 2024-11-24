@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/22 17:56:02 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/24 16:05:01 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	*monitor_death(void *arg)
 		if ((current_time - philo->last_meal_time) >= (size_t)philo->data->time_to_die)
 		{
 			print_msg(philo->data, philo->id, 5, philo->data->start_time);
-			exit(1);
+			return (NULL);
 		}
 		usleep(1000);
 	}
@@ -84,8 +84,8 @@ void	*monitor_death(void *arg)
 void	philosopher_routine_even(t_philo *philo)
 {
 	pthread_t	th;
-	
-	pthread_create(&th, NULL, &monitor_death, (void *)&philo);
+
+	pthread_create(&th, NULL, &monitor_death, (void *)philo);
 	pthread_detach(th);
 	while(1)
 	{
@@ -109,7 +109,7 @@ void	philosopher_routine_odd(t_philo *philo)
 {
 	pthread_t	th;
 
-	pthread_create(&th, NULL, &monitor_death, (void *)&philo);
+	pthread_create(&th, NULL, &monitor_death, (void *)philo);
 	pthread_detach(th);
 	usleep(1000);
 	while(1)
