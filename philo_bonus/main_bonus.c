@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/24 16:05:01 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/24 17:05:40 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ void	philosopher_routine_even(t_philo *philo)
 		philo->last_meal_time = get_current_time();
 		usleep(philo->data->time_to_eat * 1000);
 		philo->times_eaten++;
+		if (philo->times_eaten == philo->data->number_of_times_each_philosopher_must_eat)
+			sem_post(philo->data->eat_count);
 		sem_post(philo->data->forks);
 		sem_post(philo->data->forks);
 		print_msg(philo->data, philo->id, 3, philo->data->start_time);
@@ -123,6 +125,8 @@ void	philosopher_routine_odd(t_philo *philo)
 		philo->last_meal_time = get_current_time();
 		usleep(philo->data->time_to_eat * 1000);
 		philo->times_eaten++;
+		if (philo->times_eaten == philo->data->number_of_times_each_philosopher_must_eat)
+			sem_post(philo->data->eat_count);
 		sem_post(philo->data->forks);
 		sem_post(philo->data->forks);
 		print_msg(philo->data, philo->id, 3, philo->data->start_time);
@@ -130,12 +134,43 @@ void	philosopher_routine_odd(t_philo *philo)
 	}
 }
 
-int	run_philos(t_program_data *data)
+void	monitor_eating_completion(t_program_data *data)
 {
 	int	i;
 
 	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		sem_wait(data->eat_count);
+		i++;
+	}
+	//sem_wait(data->print);
+	sem_post(data->start);
+}
+
+
+int	run_philos(t_program_data *data)
+{
+	int		i;
+	pid_t	monitor_pid;
+
+	i = 0;
 	data->start_time = get_current_time();
+	if (data->number_of_times_each_philosopher_must_eat != -1)
+	{
+		monitor_pid = fork();
+		if (monitor_pid == -1)
+		{
+			perror("Error: fork failed for monitor");
+			free_resources(data);
+			exit(1);
+		}
+		if (monitor_pid == 0)
+		{
+			monitor_eating_completion(data);
+			exit(0);
+		}
+	}
 	while (i < data->number_of_philosophers)
 	{
 		data->philos[i].pid = fork();
@@ -163,6 +198,8 @@ int	run_philos(t_program_data *data)
 		kill(data->philos[i].pid, 9);
 		i++;
 	}
+	if (data->number_of_times_each_philosopher_must_eat != -1)
+		kill(monitor_pid, 9);
 	free_resources(data);
 	return (0);
 }

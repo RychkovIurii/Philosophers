@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:48:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 18:23:50 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/24 16:22:41 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_program_data
 	sem_t			*forks;
 	sem_t			*print;
 	sem_t			*start;
+	sem_t			*eat_count;
 	t_philo			*philos;
 }	t_program_data;
 
