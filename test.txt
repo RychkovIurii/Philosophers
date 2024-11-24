@@ -1,32 +1,23 @@
- % ./philo 7 310 200 100  
-0 7 is thinking
-0 2 has taken a fork
-0 2 has taken a fork
-0 2 is eating
-0 1 is thinking
-0 3 is thinking
-0 4 has taken a fork
-0 4 has taken a fork
-0 4 is eating
-0 5 is thinking
-0 6 has taken a fork
-0 6 has taken a fork
-0 6 is eating
-200 2 is sleeping
-200 1 has taken a fork
-200 1 has taken a fork
-200 1 is eating
-200 3 has taken a fork
-200 6 is sleeping
-200 5 has taken a fork
-200 5 has taken a fork
-200 5 is eating
-200 4 is sleeping
-200 7 has taken a fork
-200 3 has taken a fork
-200 3 is eating
-300 2 is thinking
-300 6 is thinking
-300 4 is thinking
-400 3 is sleeping
-400 6 died
+irychkov@irychkov42:~/Desktop/Philosophers/philo_bonus$ ls /dev/shm
+snap.discord
+irychkov@irychkov42:~/Desktop/Philosophers/philo_bonus$ ps aux | grep Z
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+irychkov   14243  0.0  0.0   9144  2176 pts/0    S+   17:52   0:00 grep --color=auto Z
+irychkov@irychkov42:~/Desktop/Philosophers/philo_bonus$ ps -ef | grep philo_bonus
+irychkov   14249    7060  0 17:53 pts/0    00:00:00 grep --color=auto philo_bonus
+
+
+No dangling semaphores:
+
+    The /dev/shm directory contains no leftover semaphores (snap.discord is unrelated to your program), indicating that semaphore cleanup (via sem_unlink) is working correctly.
+
+No zombie processes:
+
+    Running ps aux | grep Z shows no zombie processes (STAT Z), indicating that your program successfully waits for child processes using waitpid.
+
+No lingering processes:
+
+    ps -ef | grep philo_bonus doesn't show any philo_bonus processes running (other than the grep command itself). This means your program exited cleanly, killing all its child processes and itself.
+
+
+rm /dev/shm/sem.*

@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 17:11:42 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/24 16:25:09 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/24 19:33:51 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static int	initialize_semaphores(t_program_data *data)
 {
 	data->forks = sem_open("/forks", O_CREAT, 0644, data->number_of_philosophers); //failure for sem_open
 	data->print = sem_open("/print", O_CREAT, 0644, 1);
+	data->meal_time = sem_open("/meal_time", O_CREAT, 0644, 1);
 	data->start = sem_open("/start", O_CREAT, 0644, 0);
 	data->eat_count = sem_open("/eat_count", O_CREAT, 0644, 0);
 	return (0);

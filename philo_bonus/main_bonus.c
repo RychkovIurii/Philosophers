@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/24 17:05:40 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/24 19:37:47 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void	print_msg(t_program_data *data, int id, int message_code,
 	else if (message_code == 4)
 		printf("%zu %d is thinking\n", timestamp_in_ms, id);
 	else if (message_code == 5)
+	{
 		print_died_exit(data, id, timestamp_in_ms);
+		return ;
+	}
 	sem_post(data->print);
 }
 
@@ -69,13 +72,16 @@ void	*monitor_death(void *arg)
 
 	while (1)
 	{
+		usleep(500);
+		sem_wait(philo->data->meal_time);
 		current_time = get_current_time();
 		if ((current_time - philo->last_meal_time) >= (size_t)philo->data->time_to_die)
 		{
+			sem_post(philo->data->meal_time);
 			print_msg(philo->data, philo->id, 5, philo->data->start_time);
 			return (NULL);
 		}
-		usleep(1000);
+		sem_post(philo->data->meal_time);
 	}
 	return (NULL);
 
@@ -94,7 +100,9 @@ void	philosopher_routine_even(t_philo *philo)
 		sem_wait(philo->data->forks);
 		print_msg(philo->data, philo->id, 1, philo->data->start_time);
 		print_msg(philo->data, philo->id, 2, philo->data->start_time);
+		sem_wait(philo->data->meal_time);
 		philo->last_meal_time = get_current_time();
+		sem_post(philo->data->meal_time);
 		usleep(philo->data->time_to_eat * 1000);
 		philo->times_eaten++;
 		if (philo->times_eaten == philo->data->number_of_times_each_philosopher_must_eat)
@@ -113,16 +121,18 @@ void	philosopher_routine_odd(t_philo *philo)
 
 	pthread_create(&th, NULL, &monitor_death, (void *)philo);
 	pthread_detach(th);
-	usleep(1000);
+	print_msg(philo->data, philo->id, 4, philo->data->start_time);
+	usleep(philo->data->time_to_eat * 500);
 	while(1)
 	{
-		print_msg(philo->data, philo->id, 4, philo->data->start_time);
 		sem_wait(philo->data->forks);
 		print_msg(philo->data, philo->id, 1, philo->data->start_time);
 		sem_wait(philo->data->forks);
 		print_msg(philo->data, philo->id, 1, philo->data->start_time);
 		print_msg(philo->data, philo->id, 2, philo->data->start_time);
+		sem_wait(philo->data->meal_time);
 		philo->last_meal_time = get_current_time();
+		sem_post(philo->data->meal_time);
 		usleep(philo->data->time_to_eat * 1000);
 		philo->times_eaten++;
 		if (philo->times_eaten == philo->data->number_of_times_each_philosopher_must_eat)
@@ -131,6 +141,7 @@ void	philosopher_routine_odd(t_philo *philo)
 		sem_post(philo->data->forks);
 		print_msg(philo->data, philo->id, 3, philo->data->start_time);
 		usleep(philo->data->time_to_sleep * 1000);
+		print_msg(philo->data, philo->id, 4, philo->data->start_time);
 	}
 }
 
@@ -144,8 +155,9 @@ void	monitor_eating_completion(t_program_data *data)
 		sem_wait(data->eat_count);
 		i++;
 	}
-	//sem_wait(data->print);
+	sem_wait(data->print);
 	sem_post(data->start);
+	//exit(0);
 }
 
 
@@ -168,7 +180,7 @@ int	run_philos(t_program_data *data)
 		if (monitor_pid == 0)
 		{
 			monitor_eating_completion(data);
-			exit(0);
+			//exit(0);
 		}
 	}
 	while (i < data->number_of_philosophers)
@@ -180,11 +192,17 @@ int	run_philos(t_program_data *data)
 		}
 		if (data->philos[i].pid == 0)
 		{
+			sem_wait(data->meal_time);
 			data->philos[i].last_meal_time = data->start_time;
-			if (i % 2 == 0)
+			sem_post(data->meal_time);
+			if (i % 2 != 0)
+			{
 				philosopher_routine_even(&data->philos[i]);
+			}
 			else
+			{
 				philosopher_routine_odd(&data->philos[i]);
+			}
 			free_resources(data);
 			exit(0);
 		}
