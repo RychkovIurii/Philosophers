@@ -21,3 +21,5 @@ No lingering processes:
 
 
 rm /dev/shm/sem.*
+ulimit -a
+Use valgrind --tool=drd with -s to get more detailed information on semaphore errors

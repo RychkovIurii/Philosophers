@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/24 19:37:47 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/25 16:08:00 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static void	print_died_exit(t_program_data *data, int id, size_t ms)
 
 	printf("%zu %d died\n", ms, id);
 	sem_post(data->start);
+	//printf("[DEBUG] sem_post: /start semaphore in print_died_exit posted by thread %ld\n", pthread_self());
 	/* i = 0;
 	while(i < data->number_of_philosophers)
 	{
@@ -157,6 +158,7 @@ void	monitor_eating_completion(t_program_data *data)
 	}
 	sem_wait(data->print);
 	sem_post(data->start);
+	//printf("[DEBUG] sem_post: /start semaphore in monitor_eating_completion posted by thread %ld\n", pthread_self());
 	//exit(0);
 }
 
@@ -195,7 +197,7 @@ int	run_philos(t_program_data *data)
 			sem_wait(data->meal_time);
 			data->philos[i].last_meal_time = data->start_time;
 			sem_post(data->meal_time);
-			if (i % 2 != 0)
+			if (data->philos[i].id % 2 == 0)
 			{
 				philosopher_routine_even(&data->philos[i]);
 			}
@@ -209,7 +211,9 @@ int	run_philos(t_program_data *data)
 		i++;
 	}
 	//sleep(2);
+	//printf("[DEBUG] sem_wait: /start semaphore waited in run_philos by thread %ld\n", pthread_self());
 	sem_wait(data->start);
+	//printf("[DEBUG] sem_wait: /start semaphore passed in run_philos by thread %ld\n", pthread_self());
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
