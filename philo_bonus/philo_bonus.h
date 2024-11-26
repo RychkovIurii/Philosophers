@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:48:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/25 16:46:31 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/26 22:56:14 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,13 @@ typedef struct s_params
 int				manual(void);
 t_params		parse_arguments(int ac, char *av[]);
 t_program_data	*init_data(int ac, char *av[]);
+void			philosopher_routine(t_philo *philo);
+void			print_died(t_program_data *data, int id, size_t start_time);
+void			print_thinking(t_program_data *data, int id, size_t start_time);
+void			print_sleeping(t_program_data *data, int id, size_t start_time);
+void			print_eating(t_program_data *data, int id, size_t start_time);
+void			print_fork(t_program_data *data, int id, size_t start_time);
+size_t			get_current_time(void);
 int				error_and_return(char *msg, int error_code);
 void			free_resources(t_program_data *data);
 
