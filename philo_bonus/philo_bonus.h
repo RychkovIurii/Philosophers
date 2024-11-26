@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:48:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/24 19:06:55 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/25 16:46:31 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_philo
 {
 	int id;
 	pid_t pid;
+	int	must_eat;
 	int times_eaten;
 	long last_meal_time;
 	struct s_program_data *data;

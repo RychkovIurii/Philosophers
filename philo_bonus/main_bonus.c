@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/25 16:08:00 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/26 17:33:26 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,44 +23,53 @@ size_t	get_current_time(void)
 	return (current_time);
 }
 
-static void	print_died_exit(t_program_data *data, int id, size_t ms)
-{
-	/* int i; */
-
-	printf("%zu %d died\n", ms, id);
-	sem_post(data->start);
-	//printf("[DEBUG] sem_post: /start semaphore in print_died_exit posted by thread %ld\n", pthread_self());
-	/* i = 0;
-	while(i < data->number_of_philosophers)
-	{
-		if (id != data->philos[i].id)
-			kill(data->philos[i].pid, 9);
-		i++;
-	}
-	kill(data->philos[i].id, 9);
-	exit(100); */
-}
-
-void	print_msg(t_program_data *data, int id, int message_code,
-		size_t start_time)
+static void	print_died(t_program_data *data, int id, size_t start_time)
 {
 	size_t	timestamp_in_ms;
 
 	sem_wait(data->print);
 	timestamp_in_ms = get_current_time() - start_time;
-	if (message_code == 1)
-		printf("%zu %d has taken a fork\n", timestamp_in_ms, id);
-	else if (message_code == 2)
-		printf("%zu %d is eating\n", timestamp_in_ms, id);
-	else if (message_code == 3)
-		printf("%zu %d is sleeping\n", timestamp_in_ms, id);
-	else if (message_code == 4)
-		printf("%zu %d is thinking\n", timestamp_in_ms, id);
-	else if (message_code == 5)
-	{
-		print_died_exit(data, id, timestamp_in_ms);
-		return ;
-	}
+	printf("%zu %d died\n", timestamp_in_ms, id);
+	sem_post(data->start);
+}
+
+void	print_thinking(t_program_data *data, int id, size_t start_time)
+{
+	size_t	timestamp_in_ms;
+
+	sem_wait(data->print);
+	timestamp_in_ms = get_current_time() - start_time;
+	printf("%zu %d is thinking\n", timestamp_in_ms, id);
+	sem_post(data->print);
+}
+
+void	print_sleeping(t_program_data *data, int id, size_t start_time)
+{
+	size_t	timestamp_in_ms;
+
+	sem_wait(data->print);
+	timestamp_in_ms = get_current_time() - start_time;
+	printf("%zu %d is sleeping\n", timestamp_in_ms, id);
+	sem_post(data->print);
+}
+
+void	print_eating(t_program_data *data, int id, size_t start_time)
+{
+	size_t	timestamp_in_ms;
+
+	sem_wait(data->print);
+	timestamp_in_ms = get_current_time() - start_time;
+	printf("%zu %d is eating\n", timestamp_in_ms, id);
+	sem_post(data->print);
+}
+
+void	print_fork(t_program_data *data, int id, size_t start_time)
+{
+	size_t	timestamp_in_ms;
+
+	sem_wait(data->print);
+	timestamp_in_ms = get_current_time() - start_time;
+	printf("%zu %d has taken a fork\n", timestamp_in_ms, id);
 	sem_post(data->print);
 }
 
@@ -71,15 +80,16 @@ void	*monitor_death(void *arg)
 	philo = (t_philo *)arg;
 	size_t	current_time;
 
+	philo->last_meal_time = philo->data->start_time;
 	while (1)
 	{
-		usleep(500);
+		usleep(2000);
 		sem_wait(philo->data->meal_time);
 		current_time = get_current_time();
 		if ((current_time - philo->last_meal_time) >= (size_t)philo->data->time_to_die)
 		{
 			sem_post(philo->data->meal_time);
-			print_msg(philo->data, philo->id, 5, philo->data->start_time);
+			print_died(philo->data, philo->id, philo->data->start_time);
 			return (NULL);
 		}
 		sem_post(philo->data->meal_time);
@@ -88,61 +98,48 @@ void	*monitor_death(void *arg)
 
 }
 
-void	philosopher_routine_even(t_philo *philo)
+void	philosopher_routine(t_philo *philo)
 {
+	size_t start_time;
 	pthread_t	th;
 
+	start_time = philo->data->start_time;
 	pthread_create(&th, NULL, &monitor_death, (void *)philo);
 	pthread_detach(th);
-	while(1)
+	if (philo->id % 2 != 0)
 	{
-		sem_wait(philo->data->forks);
-		print_msg(philo->data, philo->id, 1, philo->data->start_time);
-		sem_wait(philo->data->forks);
-		print_msg(philo->data, philo->id, 1, philo->data->start_time);
-		print_msg(philo->data, philo->id, 2, philo->data->start_time);
-		sem_wait(philo->data->meal_time);
-		philo->last_meal_time = get_current_time();
-		sem_post(philo->data->meal_time);
-		usleep(philo->data->time_to_eat * 1000);
-		philo->times_eaten++;
-		if (philo->times_eaten == philo->data->number_of_times_each_philosopher_must_eat)
-			sem_post(philo->data->eat_count);
-		sem_post(philo->data->forks);
-		sem_post(philo->data->forks);
-		print_msg(philo->data, philo->id, 3, philo->data->start_time);
-		usleep(philo->data->time_to_sleep * 1000);
-		print_msg(philo->data, philo->id, 4, philo->data->start_time);
+		print_thinking(philo->data, philo->id, start_time);
+		usleep(1000/* philo->data->time_to_eat * 500 */);
 	}
-}
-
-void	philosopher_routine_odd(t_philo *philo)
-{
-	pthread_t	th;
-
-	pthread_create(&th, NULL, &monitor_death, (void *)philo);
-	pthread_detach(th);
-	print_msg(philo->data, philo->id, 4, philo->data->start_time);
-	usleep(philo->data->time_to_eat * 500);
 	while(1)
 	{
+		//print_thinking(philo->data, philo->id, start_time);
+		/* if (philo->id % 2 == 0)
+		{
+			usleep(philo->data->time_to_eat * 500);
+		} */
 		sem_wait(philo->data->forks);
-		print_msg(philo->data, philo->id, 1, philo->data->start_time);
+		print_fork(philo->data, philo->id, philo->data->start_time);
 		sem_wait(philo->data->forks);
-		print_msg(philo->data, philo->id, 1, philo->data->start_time);
-		print_msg(philo->data, philo->id, 2, philo->data->start_time);
+		print_fork(philo->data, philo->id, philo->data->start_time);
+		print_eating(philo->data, philo->id, start_time);
 		sem_wait(philo->data->meal_time);
 		philo->last_meal_time = get_current_time();
 		sem_post(philo->data->meal_time);
 		usleep(philo->data->time_to_eat * 1000);
-		philo->times_eaten++;
-		if (philo->times_eaten == philo->data->number_of_times_each_philosopher_must_eat)
-			sem_post(philo->data->eat_count);
+		if (philo->must_eat != -1)
+		{
+			philo->times_eaten++;
+			if (philo->times_eaten == philo->must_eat)
+				sem_post(philo->data->eat_count);
+		}
+		/* usleep(200); */ //Think how can I slow down here
 		sem_post(philo->data->forks);
 		sem_post(philo->data->forks);
-		print_msg(philo->data, philo->id, 3, philo->data->start_time);
+		print_sleeping(philo->data, philo->id, start_time);
 		usleep(philo->data->time_to_sleep * 1000);
-		print_msg(philo->data, philo->id, 4, philo->data->start_time);
+		print_thinking(philo->data, philo->id, start_time);
+		usleep(300);
 	}
 }
 
@@ -160,6 +157,7 @@ void	monitor_eating_completion(t_program_data *data)
 	sem_post(data->start);
 	//printf("[DEBUG] sem_post: /start semaphore in monitor_eating_completion posted by thread %ld\n", pthread_self());
 	//exit(0);
+	//sleep(10);
 }
 
 
@@ -169,7 +167,6 @@ int	run_philos(t_program_data *data)
 	pid_t	monitor_pid;
 
 	i = 0;
-	data->start_time = get_current_time();
 	if (data->number_of_times_each_philosopher_must_eat != -1)
 	{
 		monitor_pid = fork();
@@ -185,6 +182,7 @@ int	run_philos(t_program_data *data)
 			//exit(0);
 		}
 	}
+	data->start_time = get_current_time();
 	while (i < data->number_of_philosophers)
 	{
 		data->philos[i].pid = fork();
@@ -194,17 +192,7 @@ int	run_philos(t_program_data *data)
 		}
 		if (data->philos[i].pid == 0)
 		{
-			sem_wait(data->meal_time);
-			data->philos[i].last_meal_time = data->start_time;
-			sem_post(data->meal_time);
-			if (data->philos[i].id % 2 == 0)
-			{
-				philosopher_routine_even(&data->philos[i]);
-			}
-			else
-			{
-				philosopher_routine_odd(&data->philos[i]);
-			}
+			philosopher_routine(&data->philos[i]);
 			free_resources(data);
 			exit(0);
 		}
