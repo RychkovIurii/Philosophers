@@ -6,13 +6,13 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 17:19:33 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 18:39:04 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	monitor_eating_completion(t_program_data *data)
+static void	monitor_eating_completion(t_program_data *data)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ void	monitor_eating_completion(t_program_data *data)
 	exit(0);
 }
 
-void	check_starving(t_program_data *data, pid_t *monitor_pid)
+static void	check_starving(t_program_data *data, pid_t *monitor_pid)
 {
 	if (data->number_of_times_each_philosopher_must_eat != -1)
 	{
@@ -43,7 +43,7 @@ void	check_starving(t_program_data *data, pid_t *monitor_pid)
 	}
 }
 
-int	kill_processes(t_program_data *data, pid_t monitor_pid)
+static int	kill_processes(t_program_data *data, pid_t monitor_pid)
 {
 	int	i;
 	int	status;
@@ -69,7 +69,7 @@ int	kill_processes(t_program_data *data, pid_t monitor_pid)
 	return (exit_code);
 }
 
-int	run_philos(t_program_data *data)
+static int	run_philos(t_program_data *data)
 {
 	int		i;
 	int		exit_code;
@@ -87,7 +87,6 @@ int	run_philos(t_program_data *data)
 			kill(monitor_pid, 9);
 			while (i > 0)
 				kill(data->philos[--i].pid, 9);
-			free_resources(data);
 			error_and_return("Error: fork failed for philos\n", 1);
 		}
 		if (data->philos[i].pid == 0)
@@ -96,12 +95,12 @@ int	run_philos(t_program_data *data)
 	}
 	sem_wait(data->start);
 	exit_code = kill_processes(data, monitor_pid);
-	free_resources(data);
 	return (exit_code);
 }
 
 int	main(int ac, char *av[])
 {
+	int				exit_code;
 	t_program_data	*data;
 
 	if (ac < 5 || ac > 6)
@@ -109,5 +108,7 @@ int	main(int ac, char *av[])
 	data = init_data(ac, av);
 	if (!data)
 		return (1);
-	return (run_philos(data));
+	exit_code = run_philos(data);
+	free_resources(data);
+	return (exit_code);
 }

@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 17:11:42 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 13:53:20 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 19:00:25 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,15 @@ static int	initialize_semaphores(t_program_data *data)
 	sem_unlink("/meal_time");
 	sem_unlink("/start");
 	sem_unlink("/eat_count");
-	data->forks = sem_open("/forks", O_CREAT, 0644, data->number_of_philosophers);
+	data->forks
+		= sem_open("/forks", O_CREAT, 0644, data->number_of_philosophers);
 	data->print = sem_open("/print", O_CREAT, 0644, 1);
 	data->meal_time = sem_open("/meal_time", O_CREAT, 0644, 1);
 	data->start = sem_open("/start", O_CREAT, 0644, 0);
 	data->eat_count = sem_open("/eat_count", O_CREAT, 0644, 0);
 	if ((data->forks == SEM_FAILED) || (data->forks == SEM_FAILED)
-		||(data->forks == SEM_FAILED) || (data->forks == SEM_FAILED)
-			|| (data->forks == SEM_FAILED) || (data->forks == SEM_FAILED))
+		|| (data->forks == SEM_FAILED) || (data->forks == SEM_FAILED)
+		|| (data->forks == SEM_FAILED) || (data->forks == SEM_FAILED))
 		return (1);
 	return (0);
 }
@@ -46,7 +47,7 @@ static void	init_philosophers(t_program_data *data)
 
 	i = 0;
 	data->philos = malloc(sizeof(t_philo) * data->number_of_philosophers);
-	if(!data->philos)
+	if (!data->philos)
 	{
 		free(data);
 		error_and_exit("Error: malloc failed\n", 1);
@@ -54,7 +55,8 @@ static void	init_philosophers(t_program_data *data)
 	memset(data->philos, 0, sizeof(t_philo) * data->number_of_philosophers);
 	while (i < data->number_of_philosophers)
 	{
-		data->philos[i].must_eat = data->number_of_times_each_philosopher_must_eat;
+		data->philos[i].must_eat
+			= data->number_of_times_each_philosopher_must_eat;
 		data->philos[i].id = i + 1;
 		data->philos[i].data = data;
 		i++;
@@ -80,6 +82,7 @@ t_program_data	*init_data(int ac, char *av[])
 	init_philosophers(data);
 	if (initialize_semaphores(data))
 	{
+		(void)error_and_return("Error: init semaphores failed\n", 0);
 		free_resources(data);
 		return (NULL);
 	}

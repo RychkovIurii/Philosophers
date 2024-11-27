@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:48:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 13:52:25 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 18:40:16 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@
 
 typedef struct s_philo
 {
-	int id;
-	pid_t pid;
-	int	must_eat;
-	int times_eaten;
-	long last_meal_time;
-	struct s_program_data *data;
+	int						id;
+	pid_t					pid;
+	int						must_eat;
+	int						times_eaten;
+	long					last_meal_time;
+	struct s_program_data	*data;
 }	t_philo;
 
 typedef struct s_program_data
@@ -49,8 +49,6 @@ typedef struct s_program_data
 	sem_t			*eat_count;
 	t_philo			*philos;
 }	t_program_data;
-
-
 
 typedef struct s_params
 {
@@ -74,6 +72,5 @@ size_t			get_current_time(void);
 int				error_and_exit(char *msg, int error_code);
 int				error_and_return(char *msg, int error_code);
 void			free_resources(t_program_data *data);
-
 
 #endif
