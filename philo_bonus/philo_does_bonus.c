@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:15:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 15:19:29 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 17:17:36 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,16 @@ void	philosopher_routine(t_philo *philo)
 	pthread_t	th;
 
 	start_time = philo->data->start_time;
-	pthread_create(&th, NULL, &monitor_death, (void *)philo);
-	pthread_detach(th);
+	if (pthread_create(&th, NULL, &monitor_death, (void *)philo) != 0)
+	{
+		sem_post(philo->data->start);
+		exit (1);
+	}
+	if (pthread_detach(th) != 0)
+	{
+		sem_post(philo->data->start);
+		exit (1);
+	}
 	if (philo->id % 2 != 0)
 	{
 		print_thinking(philo->data, philo->id, start_time);

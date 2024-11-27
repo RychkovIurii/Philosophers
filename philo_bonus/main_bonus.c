@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 14:35:52 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 17:19:33 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,30 +43,40 @@ void	check_starving(t_program_data *data, pid_t *monitor_pid)
 	}
 }
 
-void	kill_processes(t_program_data *data, pid_t monitor_pid)
+int	kill_processes(t_program_data *data, pid_t monitor_pid)
 {
 	int	i;
+	int	status;
+	int	exit_code;
 
 	i = 0;
+	exit_code = 0;
 	if (data->number_of_times_each_philosopher_must_eat != -1)
 	{
 		if (kill(monitor_pid, 9) == -1)
-			(void)error_and_return("Failed to kill monitor process\n", 0);
+			exit_code = error_and_return("Failed to kill monitor process\n", 1);
 	}
 	while (i < data->number_of_philosophers)
 	{
 		if (kill(data->philos[i].pid, 9) == -1)
-			(void)error_and_return("Failed to kill philo process\n", 0);
+			exit_code = error_and_return("Failed to kill philo process\n", 1);
+		if (waitpid(data->philos[i].pid, &status, 0) == -1)
+			exit_code = error_and_return("Failed to wait philo process\n", 1);
+		if (!WIFSIGNALED(status))
+			exit_code = error_and_return("Failed pthread in philo process\n", 1);
 		i++;
 	}
+	return (exit_code);
 }
 
 int	run_philos(t_program_data *data)
 {
 	int		i;
+	int		exit_code;
 	pid_t	monitor_pid;
 
 	i = 0;
+	exit_code = 0;
 	check_starving(data, &monitor_pid);
 	data->start_time = get_current_time();
 	while (i < data->number_of_philosophers)
@@ -85,9 +95,9 @@ int	run_philos(t_program_data *data)
 		i++;
 	}
 	sem_wait(data->start);
-	kill_processes(data, monitor_pid);
+	exit_code = kill_processes(data, monitor_pid);
 	free_resources(data);
-	return (0);
+	return (exit_code);
 }
 
 int	main(int ac, char *av[])
