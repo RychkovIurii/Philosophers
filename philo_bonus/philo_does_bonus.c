@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:15:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 18:55:49 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 22:26:14 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ void	*monitor_death(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	sem_wait(philo->data->meal_time);
 	philo->last_meal_time = philo->data->start_time;
+	sem_post(philo->data->meal_time);
 	while (1)
 	{
 		usleep(2000);
