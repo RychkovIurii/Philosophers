@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 17:18:14 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 13:42:12 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 20:44:32 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	check_starving(t_program_data *data, t_philo *philos, size_t start_time)
 		if ((current_time - philos[i].last_meal_time)
 			>= (size_t)data->time_to_die)
 		{
-			print_msg(philos[i].data, philos[i].id, 5, start_time);
+			print_died_set_flag(philos[i].data, philos[i].id, start_time);
 			pthread_mutex_unlock(&data->mutex_main);
 			return (1);
 		}

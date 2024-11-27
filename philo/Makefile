@@ -6,13 +6,13 @@
 #    By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 14:30:50 by irychkov          #+#    #+#              #
-#    Updated: 2024/11/21 16:50:11 by irychkov         ###   ########.fr        #
+#    Updated: 2024/11/27 20:45:21 by irychkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = main.c parse_input.c init_data.c errors.c utils.c philo_does.c
+SRCS = main.c parse_input.c init_data.c errors.c utils.c philo_does.c print.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -20,7 +20,7 @@ OBJS = $(SRCS:.c=.o)
 
 HEADERS = -I.
 
-CFLAGS = -Wall -Wextra -Werror #-lpthread -g
+CFLAGS = -Wall -Wextra -Werror
 
 CC = cc
 

@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:18:39 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 14:31:32 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 20:41:16 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,16 @@ static void	*routine(void *arg)
 	pthread_mutex_unlock(&philo->data->mutex_main);
 	if (philo->number_of_philosophers == 1)
 	{
-		print_msg(philo->data, philo->id, 4, philo->start_time);
+		print_thinking(philo->data, philo->id, philo->start_time);
 		pthread_mutex_lock(philo->left_fork);
-		print_msg(philo->data, philo->id, 1, philo->start_time);
+		print_fork(philo->data, philo->id, philo->start_time);
 		custom_wait(philo, philo->data->time_to_die + 1);
 		pthread_mutex_unlock(philo->left_fork);
 		return (NULL);
 	}
 	if (philo->id % 2 != 0)
 	{
-		print_msg(philo->data, philo->id, 4, philo->start_time);
+		print_thinking(philo->data, philo->id, philo->start_time);
 		custom_wait(philo, philo->data->time_to_eat);
 	}
 	philo_does(philo);

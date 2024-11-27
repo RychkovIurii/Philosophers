@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:28:29 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/21 12:23:21 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 20:56:59 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ t_philo			*init_philos(t_program_data *data);
 void			philo_does(t_philo *philo);
 void			check_stop_in_main(t_program_data *data,
 					t_philo *philos, size_t start_time);
-void			print_msg(t_program_data *data, int id, int message_code,
-					size_t start_time);
 int				check_starving(t_program_data *data, t_philo *philos,
 					size_t start_time);
 size_t			get_current_time(void);
@@ -78,4 +76,11 @@ void			destroy_free_all(t_program_data *data, t_philo *philos);
 int				error_and_return(char *msg, int error_code);
 void			*init_fork_failure(t_program_data *data);
 int				manual(void);
+void			print_died_set_flag(t_program_data *data, int id,
+					size_t start_time);
+void			print_thinking(t_program_data *data, int id, size_t start_time);
+void			print_sleeping(t_program_data *data, int id, size_t start_time);
+void			print_eating(t_program_data *data, int id, size_t start_time);
+void			print_fork(t_program_data *data, int id, size_t start_time);
+
 #endif
