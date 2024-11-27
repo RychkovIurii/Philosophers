@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:50:59 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/26 23:06:30 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 14:35:52 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,8 @@ void	monitor_eating_completion(t_program_data *data)
 	}
 	sem_wait(data->print);
 	sem_post(data->start);
-	//printf("[DEBUG] sem_post: /start semaphore in monitor_eating_completion posted by thread %ld\n", pthread_self());
-	//exit(0);
-	//sleep(10);
+	usleep(424242);
+	exit(0);
 }
 
 void	check_starving(t_program_data *data, pid_t *monitor_pid)
@@ -36,16 +35,11 @@ void	check_starving(t_program_data *data, pid_t *monitor_pid)
 		*monitor_pid = fork();
 		if (*monitor_pid == -1)
 		{
-			perror("Error: fork failed for monitor");
 			free_resources(data);
-			exit(1);
+			error_and_exit("Error: fork failed for monitor\n", 1);
 		}
 		if (*monitor_pid == 0)
-		{
 			monitor_eating_completion(data);
-			//usleep(424242);
-			//exit(0); //Check if this is needed
-		}
 	}
 }
 
@@ -55,10 +49,14 @@ void	kill_processes(t_program_data *data, pid_t monitor_pid)
 
 	i = 0;
 	if (data->number_of_times_each_philosopher_must_eat != -1)
-		kill(monitor_pid, 9);
+	{
+		if (kill(monitor_pid, 9) == -1)
+			(void)error_and_return("Failed to kill monitor process\n", 0);
+	}
 	while (i < data->number_of_philosophers)
 	{
-		kill(data->philos[i].pid, 9);
+		if (kill(data->philos[i].pid, 9) == -1)
+			(void)error_and_return("Failed to kill philo process\n", 0);
 		i++;
 	}
 }
@@ -76,15 +74,14 @@ int	run_philos(t_program_data *data)
 		data->philos[i].pid = fork();
 		if (data->philos[i].pid == -1)
 		{
-			//think
+			kill(monitor_pid, 9);
+			while (i > 0)
+				kill(data->philos[--i].pid, 9);
+			free_resources(data);
+			error_and_return("Error: fork failed for philos\n", 1);
 		}
 		if (data->philos[i].pid == 0)
-		{
 			philosopher_routine(&data->philos[i]);
-			free_resources(data);
-			//usleep(424242);
-			exit(0);
-		}
 		i++;
 	}
 	sem_wait(data->start);
