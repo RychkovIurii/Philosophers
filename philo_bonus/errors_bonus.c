@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 17:00:23 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/24 19:05:17 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 13:52:10 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,12 @@ int	error_and_return(char *msg, int error_code)
 {
 	write(2, msg, ft_strlen(msg));
 	return (error_code);
+}
+
+int	error_and_exit(char *msg, int error_code)
+{
+	write(2, msg, ft_strlen(msg));
+	exit (error_code);
 }
 
 void	free_resources(t_program_data *data)
