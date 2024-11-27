@@ -6,7 +6,7 @@
 #    By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/21 16:48:09 by irychkov          #+#    #+#              #
-#    Updated: 2024/11/26 22:18:08 by irychkov         ###   ########.fr        #
+#    Updated: 2024/11/27 13:12:21 by irychkov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ OBJS = $(SRCS:.c=.o)
 
 HEADERS = -I.
 
-CFLAGS = -Wall -Wextra -Werror -g #-lpthread -g
+CFLAGS = -Wall -Wextra -Werror #-g #-lpthread -g
 
 CC = cc
 

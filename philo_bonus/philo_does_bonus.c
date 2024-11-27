@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:15:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/26 23:11:16 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 15:19:29 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 size_t	get_current_time(void)
 {
-	size_t				current_time;
-	struct timeval		time;
+	size_t			current_time;
+	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) != 0)
-		write(2, "Error: gettimeofday failed\n", 27);
+		(void)error_and_return("Error: gettimeofday failed\n", 0);
 	current_time = time.tv_sec * 1000 + time.tv_usec / 1000;
 	return (current_time);
 }
@@ -59,15 +59,10 @@ void	philosopher_routine(t_philo *philo)
 	if (philo->id % 2 != 0)
 	{
 		print_thinking(philo->data, philo->id, start_time);
-		usleep(1000/* philo->data->time_to_eat * 500 */);
+		usleep(1000);
 	}
 	while(1)
 	{
-		//print_thinking(philo->data, philo->id, start_time);
-		/* if (philo->id % 2 == 0)
-		{
-			usleep(philo->data->time_to_eat * 500);
-		} */
 		sem_wait(philo->data->forks);
 		print_fork(philo->data, philo->id, philo->data->start_time);
 		sem_wait(philo->data->forks);
