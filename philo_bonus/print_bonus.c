@@ -6,11 +6,11 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 21:14:53 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/26 23:11:20 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/27 19:16:01 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <philo_bonus.h>
+#include "philo_bonus.h"
 
 void	print_died(t_program_data *data, int id, size_t start_time)
 {
