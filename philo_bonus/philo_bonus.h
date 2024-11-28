@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 16:48:05 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 18:40:16 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/28 14:33:55 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ void			philosopher_routine(t_philo *philo);
 void			print_died(t_program_data *data, int id, size_t start_time);
 void			print_thinking(t_program_data *data, int id, size_t start_time);
 void			print_sleeping(t_program_data *data, int id, size_t start_time);
-void			print_eating(t_program_data *data, int id, size_t start_time);
+void			print_eating(t_program_data *data, t_philo *philo,
+					size_t start_time);
 void			print_fork(t_program_data *data, int id, size_t start_time);
 size_t			get_current_time(void);
 int				error_and_exit(char *msg, int error_code);

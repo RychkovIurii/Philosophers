@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 21:14:53 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 19:16:01 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/28 13:56:13 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,16 @@ void	print_sleeping(t_program_data *data, int id, size_t start_time)
 	sem_post(data->print);
 }
 
-void	print_eating(t_program_data *data, int id, size_t start_time)
+void	print_eating(t_program_data *data, t_philo *philo, size_t start_time)
 {
 	size_t	timestamp_in_ms;
 
 	sem_wait(data->print);
-	timestamp_in_ms = get_current_time() - start_time;
-	printf("%zu %d is eating\n", timestamp_in_ms, id);
+	sem_wait(data->meal_time);
+	philo->last_meal_time = get_current_time();
+	timestamp_in_ms = philo->last_meal_time - start_time;
+	sem_post(data->meal_time);
+	printf("%zu %d is eating\n", timestamp_in_ms, philo->id);
 	sem_post(data->print);
 }
 

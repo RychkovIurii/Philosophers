@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:15:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/28 11:26:17 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/28 14:34:18 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	*monitor_death(void *arg)
 	sem_post(philo->data->meal_time);
 	while (1)
 	{
-		usleep(2000);
+		usleep(900);
 		sem_wait(philo->data->meal_time);
 		current_time = get_current_time();
 		if ((current_time - philo->last_meal_time)
@@ -71,11 +71,8 @@ static void	eat(t_philo *philo, size_t start_time)
 	print_fork(philo->data, philo->id, start_time);
 	sem_wait(philo->data->forks);
 	print_fork(philo->data, philo->id, start_time);
-	print_eating(philo->data, philo->id, start_time);
-	sem_wait(philo->data->meal_time);
-	philo->last_meal_time = get_current_time();
-	sem_post(philo->data->meal_time);
-	usleep(philo->data->time_to_eat * 1000);
+	print_eating(philo->data, philo, start_time);
+	usleep(philo->data->time_to_eat * 1000 - 200);
 	if (philo->must_eat != -1)
 	{
 		philo->times_eaten++;
@@ -95,13 +92,13 @@ void	philosopher_routine(t_philo *philo)
 	create_monitor_and_detach(philo);
 	print_thinking(philo->data, philo->id, start_time);
 	if (philo->id % 2 != 0)
-		usleep(1000);
+		usleep(philo->data->time_to_eat * 500);
 	while (1)
 	{
 		eat(philo, start_time);
 		print_sleeping(philo->data, philo->id, start_time);
 		usleep(philo->data->time_to_sleep * 1000);
 		print_thinking(philo->data, philo->id, start_time);
-		usleep(500);
+		usleep(1000);
 	}
 }
