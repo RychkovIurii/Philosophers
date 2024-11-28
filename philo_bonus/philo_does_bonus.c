@@ -6,7 +6,7 @@
 /*   By: irychkov <irychkov@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 22:15:48 by irychkov          #+#    #+#             */
-/*   Updated: 2024/11/27 22:26:14 by irychkov         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:26:17 by irychkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,9 @@ void	philosopher_routine(t_philo *philo)
 
 	start_time = philo->data->start_time;
 	create_monitor_and_detach(philo);
+	print_thinking(philo->data, philo->id, start_time);
 	if (philo->id % 2 != 0)
-	{
-		print_thinking(philo->data, philo->id, start_time);
 		usleep(1000);
-	}
 	while (1)
 	{
 		eat(philo, start_time);
